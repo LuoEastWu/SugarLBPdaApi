@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6A79C396-12C0-4576-BC27-5B660AEC40A6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Model</RootNamespace>
+    <AssemblyName>Model</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common.cs" />
+    <Compile Include="CusInfo.cs" />
+    <Compile Include="GeneralReturns.cs" />
+    <Compile Include="JPushMode.cs" />
+    <Compile Include="LBTable\ApiLog.cs" />
+    <Compile Include="LBTable\AppConFig.cs" />
+    <Compile Include="LBTable\app_config.cs" />
+    <Compile Include="LBTable\Area.cs" />
+    <Compile Include="LBTable\aviationBag.cs" />
+    <Compile Include="LBTable\CFHMPring.cs" />
+    <Compile Include="LBTable\clearanceNumber.cs" />
+    <Compile Include="LBTable\CusInfo.cs" />
+    <Compile Include="LBTable\EDB_Order.cs" />
+    <Compile Include="LBTable\finance.cs" />
+    <Compile Include="LBTable\finance_type.cs" />
+    <Compile Include="LBTable\Forwarder.cs" />
+    <Compile Include="LBTable\Forwarder_number.cs" />
+    <Compile Include="LBTable\GoodsCatalog.cs" />
+    <Compile Include="LBTable\HmTrack.cs" />
+    <Compile Include="LBTable\log_billcodeGoodsType.cs" />
+    <Compile Include="LBTable\LongFee.cs" />
+    <Compile Include="LBTable\Money_Exchange.cs" />
+    <Compile Include="LBTable\Money_Log.cs" />
+    <Compile Include="LBTable\OrderCHAviation.cs" />
+    <Compile Include="LBTable\PDARole.cs" />
+    <Compile Include="LBTable\PDA_menu.cs" />
+    <Compile Include="LBTable\pic.cs" />
+    <Compile Include="LBTable\pmw_address.cs" />
+    <Compile Include="LBTable\pmw_admin.cs" />
+    <Compile Include="LBTable\pmw_admingroup.cs" />
+    <Compile Include="LBTable\pmw_air.cs" />
+    <Compile Include="LBTable\pmw_AirReturn.cs" />
+    <Compile Include="LBTable\pmw_AriPack.cs" />
+    <Compile Include="LBTable\pmw_AriPack_bar.cs" />
+    <Compile Include="LBTable\pmw_aviation.cs" />
+    <Compile Include="LBTable\pmw_billcode.cs" />
+    <Compile Include="LBTable\pmw_billcode_delete_log.cs" />
+    <Compile Include="LBTable\pmw_bill_tips.cs" />
+    <Compile Include="LBTable\pmw_car.cs" />
+    <Compile Include="LBTable\pmw_cascadedata.cs" />
+    <Compile Include="LBTable\pmw_clearance.cs" />
+    <Compile Include="LBTable\pmw_config.cs" />
+    <Compile Include="LBTable\pmw_confirm_weight.cs" />
+    <Compile Include="LBTable\pmw_country.cs" />
+    <Compile Include="LBTable\pmw_CustomerData.cs" />
+    <Compile Include="LBTable\pmw_declaration.cs" />
+    <Compile Include="LBTable\pmw_goods.cs" />
+    <Compile Include="LBTable\pmw_house.cs" />
+    <Compile Include="LBTable\pmw_integral_detail.cs" />
+    <Compile Include="LBTable\pmw_kd_com.cs" />
+    <Compile Include="LBTable\pmw_lost_billcode.cs" />
+    <Compile Include="LBTable\pmw_member.cs" />
+    <Compile Include="LBTable\Pmw_MemberDiscount.cs" />
+    <Compile Include="LBTable\Pmw_MemberLVDiscount.cs" />
+    <Compile Include="LBTable\pmw_member_deletelog.cs" />
+    <Compile Include="LBTable\pmw_order.cs" />
+    <Compile Include="LBTable\pmw_pay.cs" />
+    <Compile Include="LBTable\pmw_pay_sk.cs" />
+    <Compile Include="LBTable\pmw_Peer.cs" />
+    <Compile Include="LBTable\pmw_PeerDeliverBill.cs" />
+    <Compile Include="LBTable\pmw_PeerGoods.cs" />
+    <Compile Include="LBTable\pmw_pree.cs" />
+    <Compile Include="LBTable\pmw_Print.cs" />
+    <Compile Include="LBTable\pmw_region.cs" />
+    <Compile Include="LBTable\pmw_salesReturn.cs" />
+    <Compile Include="LBTable\pmw_taobaoAudit.cs" />
+    <Compile Include="LBTable\pmw_TaoBaoBaby.cs" />
+    <Compile Include="LBTable\pmw_timeBar.cs" />
+    <Compile Include="LBTable\pmw_track.cs" />
+    <Compile Include="LBTable\pmw_track_car.cs" />
+    <Compile Include="LBTable\pmw_track_fj.cs" />
+    <Compile Include="LBTable\pmw_transfer.cs" />
+    <Compile Include="LBTable\pmw_type_price.cs" />
+    <Compile Include="LBTable\pmw_usergroup.cs" />
+    <Compile Include="LBTable\pmw_wavehouse.cs" />
+    <Compile Include="LBTable\pmw_weight_detail.cs" />
+    <Compile Include="LBTable\pmw_ztd_track.cs" />
+    <Compile Include="LBTable\price.cs" />
+    <Compile Include="LBTable\PrintConfig.cs" />
+    <Compile Include="LBTable\PushMessage.cs" />
+    <Compile Include="LBTable\QuestionType.cs" />
+    <Compile Include="LBTable\rechargeSheet.cs" />
+    <Compile Include="LBTable\Table_assing_task.cs" />
+    <Compile Include="LBTable\Table_Email.cs" />
+    <Compile Include="LBTable\Table_sign.cs" />
+    <Compile Include="LBTable\Table_sms.cs" />
+    <Compile Include="LBTable\Table_ztd.cs" />
+    <Compile Include="LBTable\tab_filter.cs" />
+    <Compile Include="LBTable\tab_goods.cs" />
+    <Compile Include="LBTable\tab_inplace.cs" />
+    <Compile Include="LBTable\tab_kd_jd.cs" />
+    <Compile Include="LBTable\tab_menu.cs" />
+    <Compile Include="LBTable\tab_qs.cs" />
+    <Compile Include="LBTable\tab_Question.cs" />
+    <Compile Include="LBTable\Tab_role.cs" />
+    <Compile Include="LBTable\TaoBaoInfo.cs" />
+    <Compile Include="LBTable\TaoBaoLevel.cs" />
+    <Compile Include="LBTable\test.cs" />
+    <Compile Include="LBTable\View_cus_report.cs" />
+    <Compile Include="LBTable\View_ForwarderName.cs" />
+    <Compile Include="LBTable\View_memeber_integral.cs" />
+    <Compile Include="LBTable\View_place.cs" />
+    <Compile Include="LBTable\virtual_house.cs" />
+    <Compile Include="LBTable\volume.cs" />
+    <Compile Include="ModelLogin.cs" />
+    <Compile Include="Mode\DataMode.cs" />
+    <Compile Include="Mode\ModeAttribute.cs" />
+    <Compile Include="Mode\PubMode.cs" />
+    <Compile Include="Mode\RequestMode.cs" />
+    <Compile Include="Mode\ResponseMode.cs" />
+    <Compile Include="M_AbnormalPicking.cs" />
+    <Compile Include="M_AbnormalPickingList.cs" />
+    <Compile Include="M_CheckBillcodeInfo.cs" />
+    <Compile Include="M_CheckOrderInfo.cs" />
+    <Compile Include="M_Forwarder.cs" />
+    <Compile Include="M_GetVosionNo.cs" />
+    <Compile Include="M_inplace.cs" />
+    <Compile Include="M_IStask.cs" />
+    <Compile Include="M_KD_comInfo.cs" />
+    <Compile Include="M_KD_jd.cs" />
+    <Compile Include="M_NumberOffShelf.cs" />
+    <Compile Include="M_OffShelf.cs" />
+    <Compile Include="M_PeerDeliverBill.cs" />
+    <Compile Include="M_PeerInfo.cs" />
+    <Compile Include="M_Picking.cs" />
+    <Compile Include="M_PickingStop.cs" />
+    <Compile Include="M_Print.cs" />
+    <Compile Include="M_PushMessage.cs" />
+    <Compile Include="M_ShopList.cs" />
+    <Compile Include="M_wavehouse.cs" />
+    <Compile Include="M_ztPriceList.cs" />
+    <Compile Include="M_ZTsendGoods.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="M_ZTPutaway.cs" />
+    <Compile Include="TestPost.cs" />
+    <Compile Include="VosionNo\Version.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
+      <Project>{489bb790-226c-4fad-8d1e-51d72a7ff8e5}</Project>
+      <Name>SqlSugar</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

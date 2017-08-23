@@ -1,0 +1,49 @@
+﻿@{
+    Layout = null;
+}
+@using Model.Mode
+@model DataMode.PostMode
+@Styles.Render("~/Content/css")
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>瑞康信息科技有限公司Api测试页面</title>
+</head>
+<body>
+    <div class="MainDiv">
+        <div class="TitleDiv">
+            <h3>API接口在线调用测试页面</h3>
+        </div>
+        <table class="TableDiv">
+            <tr><th width="20%">访问次数</th><td width="80%">@Common.Entity.ComeCount.ToString() 次</td></tr>
+            <tr><th>接口说明</th><td>@Model.Rem</td></tr>
+            <tr><th>接口名称(<span style="color:green;">FunctionName</span>)</th><td>@Model.FunctionName</td></tr>
+        </table>
+        <br />
+        @using (Html.BeginForm("CallTest", "CallTest"))
+        {
+            @Html.AntiForgeryToken()
+            <span>
+                @Html.TextBoxFor(m => m.FunctionName, new { @class = "NoShow" })
+                @Html.TextBoxFor(m => m.ControllerName, new { @class = "NoShow" })
+                @Html.TextBoxFor(m => m.Rem, new { @class = "NoShow" })
+            </span>
+            <div class="CellTextDiv">
+                <table class="TableDiv">
+                    <tr><th width="20%">请求数据(<span style="color:green;">JsonData</span>)</th><td width="80%">@Html.TextAreaFor(m => m.JsonData, new { placeholder = "请在这里输入您访问接口必须的请求数据(Json格式数据)" })</td></tr>
+                    <tr><th>权限账号(<span style="color:green;">CusID</span>)</th><td>@Html.TextBoxFor(m => m.CusID, new { placeholder = "请输入分配给您的权限账号(CusID) 如未分配请联系瑞康科技" })</td></tr>
+                    <tr><th>权限密钥(Key)</th><td>@Html.TextBoxFor(m => m.Key, new { placeholder = "请输入分配给您的权限密码(Key)" })</td></tr>
+                    <tr><th>操作</th><td><input type="submit" name="CallApi" value="提交测试" /></td></tr>
+                    <tr><th>加密标识(<span style="color:green;">KeyMd5</span>)</th><td style="color:red;">@Model.KeyMd5</td></tr>
+                    <tr><th>API返回数据</th><td>@ViewBag.ReturnText</td></tr>
+                </table>
+                @Html.ValidationSummary(true)
+            </div>
+        }
+        <div class="TitleDiv">
+            RcomInfo.com 深圳瑞康科技有限公司出品
+        </div>
+    </div>
+</body>
+</html>

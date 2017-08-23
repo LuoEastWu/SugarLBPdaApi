@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CF89138B-DFA3-4A3A-A89F-51E34D63C702}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DAL</RootNamespace>
+    <AssemblyName>DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DalGet_order_detail.cs" />
+    <Compile Include="Dal_AbnormalPicking.cs" />
+    <Compile Include="Dal_AbnormalPickingList.cs" />
+    <Compile Include="Dal_CheckBillcodeInfo.cs" />
+    <Compile Include="Dal_CheckOrderInfo.cs" />
+    <Compile Include="Dal_Forwarder.cs" />
+    <Compile Include="Dal_GetVosionNo.cs" />
+    <Compile Include="Dal_inplace.cs" />
+    <Compile Include="Dal_IStask.cs" />
+    <Compile Include="Dal_KD_comInfo.cs" />
+    <Compile Include="Dal_KD_jd.cs" />
+    <Compile Include="Dal_Login.cs" />
+    <Compile Include="Dal_NumberOffShelf.cs" />
+    <Compile Include="Dal_PeerDeliverBill.cs" />
+    <Compile Include="Dal_PeerInfo.cs" />
+    <Compile Include="Dal_Picking.cs" />
+    <Compile Include="Dal_PickingStop.cs" />
+    <Compile Include="Dal_Print.cs" />
+    <Compile Include="Dal_PushMessage.cs" />
+    <Compile Include="Dal_ShopList.cs" />
+    <Compile Include="Dal_wavehouseList.cs" />
+    <Compile Include="Dal_ztPriceList.cs" />
+    <Compile Include="Dal_ZTPutaway.cs" />
+    <Compile Include="Dal_ZTsendGoods.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{1dfbc8bc-5837-4bb5-b85b-00304df714ba}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{6a79c396-12c0-4576-bc27-5b660aec40a6}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
+      <Project>{489bb790-226c-4fad-8d1e-51d72a7ff8e5}</Project>
+      <Name>SqlSugar</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

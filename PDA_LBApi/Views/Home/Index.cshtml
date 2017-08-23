@@ -1,0 +1,56 @@
+﻿@{
+    Layout = null;
+}
+@Styles.Render("~/Content/css")
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>瑞康信息科技有限公司Api专用页面</title>
+</head>
+<body>
+    <div class="MainDiv">
+        <div class="TitleDiv">
+            <h2>API列表明细</h2>
+        </div>
+        <table class="TableDiv">
+            <tr><th width="30%">接口调用地址</th><td width="70%">Http://@Request.Url.Host:@Request.Url.Port/Wkd/AllTransfer</td></tr>
+            <tr><th>当前版本</th><td>V 1.0</td></tr>
+            <tr><th>访问次数</th><td>@Common.Entity.ComeCount.ToString() 次</td></tr>
+        </table>
+        <br />
+        @foreach (var _object in typeof(PDA_LBApi.Controllers.PDAController).GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance))
+        {
+            if (_object.GetParameters().Count() == 1 && _object.ReturnType.Equals(typeof(Model.GeneralReturns)))
+            {
+                var Obj = _object.GetParameters()[0].ParameterType;
+                var MethodsAttibure = (Model.Mode.ReturnClass)_object.GetCustomAttributes(typeof(Model.Mode.ReturnClass), false).FirstOrDefault();
+                //var ReturnClass = MethodsAttibure == null ? "" : MethodsAttibure.Type.ToString();
+                //var attibureClass = (Model.Mode.ModeClassAttribute)Obj.GetCustomAttributes(typeof(Model.Mode.ModeClassAttribute), false).FirstOrDefault();
+                var ClassRem = MethodsAttibure == null ? String.Empty : MethodsAttibure.Rem;
+                <table class="TableDiv">
+                    <tr><th width="20%">接口说明</th><td width="80%">@ClassRem</td></tr>
+                    <tr><th>接口名称</th><td>@Html.ActionLink(@_object.Name, "CallTest", "CallTest", new { ControllerName = "PDA", FunctionName = @_object.Name, Rem = @ClassRem }, null)</td></tr>
+                </table>
+                <table class="TableDiv">
+                    <tr><th width="20%">参数名称</th><th width="20%">参数类型</th><th width="20%">是否可空</th><th width="60%">参数说明</th></tr>
+                    @{
+                foreach (var a in Obj.GetProperties())
+                {
+                    var attibute = (Model.Mode.ModeAttribute)a.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                    var Rem = attibute == null ? string.Empty : attibute.Rem;
+                    var IsNull = attibute == null ? "必填" : attibute.IsNull ? "可空" : "必填";
+                    var NowType = a.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                    <tr><td>@a.Name</td><td>@NowType</td><td>@IsNull</td><td>@Rem</td></tr>
+                }
+                    }
+                </table>
+                <br />
+            }
+        }
+        <div class="TitleDiv">
+            RcomInfo.com 深圳瑞康科技有限公司出品
+        </div>
+    </div>
+</body>
+</html>

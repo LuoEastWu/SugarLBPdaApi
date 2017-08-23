@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3676BC40-225F-4B9A-9823-02AB84992D85}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BLL</RootNamespace>
+    <AssemblyName>BLL</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="JPush">
+      <HintPath>..\Common\bin\Debug\JPush.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BllGet_order_detail.cs" />
+    <Compile Include="Bll_AbnormalPicking.cs" />
+    <Compile Include="Bll_AbnormalPickingList.cs" />
+    <Compile Include="Bll_CheckBillcodeInfo.cs" />
+    <Compile Include="Bll_CheckOrderInfo.cs" />
+    <Compile Include="Bll_Forwarder.cs" />
+    <Compile Include="Bll_GetVosionNo.cs" />
+    <Compile Include="Bll_inplace.cs" />
+    <Compile Include="Bll_IStask.cs" />
+    <Compile Include="Bll_JPushSent.cs" />
+    <Compile Include="Bll_KD_comInfo.cs" />
+    <Compile Include="Bll_KD_jd.cs" />
+    <Compile Include="Bll_Login.cs" />
+    <Compile Include="Bll_NumberOffShelf.cs" />
+    <Compile Include="Bll_PeerDeliverBill.cs" />
+    <Compile Include="Bll_PeerInfo.cs" />
+    <Compile Include="Bll_Picking.cs" />
+    <Compile Include="Bll_PickingStop.cs" />
+    <Compile Include="Bll_Print.cs" />
+    <Compile Include="Bll_PushMessage.cs" />
+    <Compile Include="Bll_ShopList.cs" />
+    <Compile Include="Bll_wavehouseList.cs" />
+    <Compile Include="Bll_ztPriceList.cs" />
+    <Compile Include="Bll_ZTPutaway.cs" />
+    <Compile Include="Bll_ZTsendGoods.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{1dfbc8bc-5837-4bb5-b85b-00304df714ba}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{cf89138b-dfa3-4a3a-a89f-51e34d63c702}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{6a79c396-12c0-4576-bc27-5b660aec40a6}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
