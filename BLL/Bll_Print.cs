@@ -119,8 +119,9 @@ namespace BLL
                             genRet.MsgText = "无法获取派件公司信息";
                             return genRet;
                         }
-
                         string printNo = new DAL.Dal_Print().getPrintNo(forwarderInfo.id);
+                       
+                        
                         if (string.IsNullOrEmpty(printNo))
                         {
                             genRet.MsgText ="无法获取单号";
@@ -316,8 +317,24 @@ namespace BLL
         }
 
 
-
-        private  bool PushDataEjs(string cname, string expressCompany, double billWeight, string Goods, string BillCodeNum, string wavehouse, pmw_order orderInfo, pmw_house houseInfo, pmw_member memberInfo, ref string SignerCode, ref string VersionCode, ref string addressCode, ref string message)
+        /// <summary>
+        /// 推送资料
+        /// </summary>
+        /// <param name="cname"></param>
+        /// <param name="expressCompany"></param>
+        /// <param name="billWeight"></param>
+        /// <param name="Goods"></param>
+        /// <param name="BillCodeNum"></param>
+        /// <param name="wavehouse"></param>
+        /// <param name="orderInfo"></param>
+        /// <param name="houseInfo"></param>
+        /// <param name="memberInfo"></param>
+        /// <param name="SignerCode"></param>
+        /// <param name="VersionCode"></param>
+        /// <param name="addressCode"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private  bool PushDataEjs(string cname, string expressCompany, double billWeight, string Goods, string BillCodeNum, string wavehouse, pmw_order orderInfo, pmw_house houseInfo, pmw_member memberInfo, ref string SignerCode,string collectingMoney, ref string VersionCode, ref string addressCode, ref string message,string gyNumber="")
         {
             bool pushBoo = false;
             billWeight = billWeight <= 0 ? 1 : billWeight;
@@ -361,7 +378,7 @@ namespace BLL
                     VersionCode =Common.Collections.HmHelper.VisonNo.egs_version;
                     addressCode =Common.Collections.HmHelper.query_suda7(hmData.SignerAddress).suda7_1;
 
-                    pushBoo = Hm.ToEOD(Common.Entity.HmPaht, true);
+                    pushBoo = Hm.ToEOD(Common.Entity.ftpPaht, true);
                     Common.SystemLog.WriteSystemLog("黑猫推送文件：", pushBoo.ToString());
                     Common.SystemLog.WriteSystemLog("Hm", pushBoo.ToString());
                 }
@@ -410,7 +427,7 @@ namespace BLL
 
                     Cf.AddData(cfdata);
                     SignerCode = cfdata.SignSite;
-                    pushBoo = Cf.ToExecl(Common.Entity.HmPaht, true);
+                    pushBoo = Cf.ToExecl(Common.Entity.ftpPaht, true);
 
                     Common.SystemLog.WriteSystemLog("超峰推送文件：", pushBoo.ToString());
 
@@ -422,8 +439,64 @@ namespace BLL
                 }
 
             }
+            else if (expressCompany.Contains("国阳"))
+            {
+                
+            }
             return pushBoo;
 
+        }
+        /// <summary>
+        /// 国阳推送
+        /// </summary>
+        /// <param name="deliveryMethod">發貨方式 填入'A01'為宅配檔、'A02' 為超商檔</param>
+        /// <param name="recipients">收件人</param>
+        /// <param name="direction">收件人地址 若發貨方式為"宅配"請填入正確地址</param>
+        /// <param name="recipientCellPhone">收件人行動電話</param>
+        /// <param name="orderNumber">訂單編號 請填入區段編號</param>
+        /// <param name="productName">商品名稱</param>
+        /// <param name="quantityCommodity">商品數量</param>
+        /// <param name="collectingMoney">代收货款</param>
+        /// <param name="remark"> 備註 請填入大號</param>
+        /// <param name="weight"> 重量 請以克重 g 為單位</param>
+        /// <param name="shippingLogistics"> 發貨物流 1.郵局2.宅配通3.黑貓4.超商</param>
+        /// <param name="recipientEmail">收件人電子郵件</param>
+        /// <param name="outletsName">門市名稱 若發貨方式為"超商"門市代碼 此為必塡</param>
+        /// <param name="outletsCode">門市代碼 若發貨方式為"超商"門市代碼 此為必塡</param>
+        /// <param name="outletsAddress">門市地址 若發貨方式為"超商"門市代碼 此為必塡</param>
+        /// <param name="outletsPhone">門市電話 若發貨方式為"超商"門市代碼 此為必塡</param>
+        public void pushDataGy(string deliveryMethod, string recipients, string direction, string recipientCellPhone, string orderNumber, string productName, string quantityCommodity, string collectingMoney, string remark, string weight, string shippingLogistics, string recipientEmail = "", string outletsName = "", string outletsCode = "", string outletsAddress = "", string outletsPhone) 
+        {
+
+            if (deliveryMethod == "'A02")
+            {
+                if (string.IsNullOrEmpty(outletsName) || string.IsNullOrEmpty(outletsCode) || string.IsNullOrEmpty(outletsAddress) || string.IsNullOrEmpty(outletsPhone))
+                {
+                    return;
+                }
+            }
+
+            ApiHelp.GyDataInfo gyInfo = new ApiHelp.GyDataInfo()
+            {
+                deliveryMethod = deliveryMethod,
+                recipients = recipients,
+                direction = direction,
+                recipientCellPhone = recipientCellPhone,
+                recipientEmail = recipientEmail,
+                outletsName = outletsName,
+                outletsCode = outletsCode,
+                outletsAddress = outletsAddress,
+                outletsPhone = outletsPhone,
+                orderNumber = orderNumber,
+                productName = productName,
+                quantityCommodity = quantityCommodity,
+                collectingMoney = collectingMoney,
+                remark = remark,
+                weight = weight,
+                shippingLogistics = shippingLogistics,
+            };
+            ApiHelp.GYApi gyA = new ApiHelp.GYApi();
+            gyA.GyFtp(gyA.GyDataTable(gyInfo), Common.Entity.ftpPaht + "\\ApiSentData\\Dv_YYYYMMDD_XXXXXXXXXX_HHii.csv");
         }
 
 

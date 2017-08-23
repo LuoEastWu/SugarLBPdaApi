@@ -70,6 +70,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApiHelp\ApiHelp.csproj">
+      <Project>{57eed693-5c32-497b-80f2-ca08339ff24c}</Project>
+      <Name>ApiHelp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{1dfbc8bc-5837-4bb5-b85b-00304df714ba}</Project>
       <Name>Common</Name>

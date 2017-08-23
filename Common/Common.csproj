@@ -62,6 +62,7 @@
     <Compile Include="CodeFirst.cs" />
     <Compile Include="Collections.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="CsvHelp.cs" />
     <Compile Include="DataHandling.cs" />
     <Compile Include="DbFirst.cs" />
     <Compile Include="Encryption.cs" />

@@ -18,6 +18,6 @@ namespace Common
         /// <summary>
         /// 网站目录路径
         /// </summary>
-        public static string HmPaht { get; set; }
+        public static string ftpPaht { get; set; }
     }
 }
