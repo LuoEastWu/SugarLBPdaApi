@@ -35,6 +35,7 @@ namespace SqlSugar
         }
         public override string ToSqlString()
         {
+            base.AppendFilter();
             string result = null;
             string oldOrderBy = this.OrderByValue;
             sql = new StringBuilder();
@@ -70,7 +71,6 @@ namespace SqlSugar
         {
             get
             {
-                if (this.IsCount) return "COUNT(1) AS `Count` ";
                 string reval = string.Empty;
                 if (this.SelectValue == null || this.SelectValue is string)
                 {

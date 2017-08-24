@@ -28,17 +28,18 @@ namespace Common
                 {
                     if (_client == null || _client.Count == 0)
                     {
-
-                        var db = Common.Config.GetInstance();
-                        var student1 = db.Queryable<CusInfo>()
-                                         .Where(s1 => s1.State == 0)
-                                         .Select<Model.CusInfo>(s1 => new Model.CusInfo()
-                                         {
-                                             CusID = s1.CusID.ToString(),
-                                             CusName = s1.CusName,
-                                             KeyText = s1.KeyText,
-                                             Count = s1.Count.ToString()
-                                         }).ToList();
+                        Common.Config.StartSqlSugar((db) =>
+                       {
+                           _client = db.Queryable<CusInfo>()
+                                      .Where(s1 => s1.State == 0)
+                                      .Select<Model.CusInfo>(s1 => new Model.CusInfo()
+                                      {
+                                          CusID = s1.CusID.ToString(),
+                                          CusName = s1.CusName,
+                                          KeyText = s1.KeyText,
+                                          Count = s1.Count.ToString()
+                                      }).ToList();
+                       });
                     }
                 }
                 catch
@@ -64,17 +65,19 @@ namespace Common
                 }
                 else
                 {
-                    var db = Common.Config.GetInstance();
-                 _Object = db.Queryable<CusInfo>()
-                                    .Where(x => x.CusID == SqlFunc.ToInt32(CusID))
-                                    .Select<Model.CusInfo>(x => new Model.CusInfo()
-                                    {
-                                        CusID = x.CusID.ToString(),
-                                        CusName = x.CusName,
-                                        Count = x.Count.ToString(),
-                                        KeyText = x.KeyText
-                                    }).First();
-                        _client.Add(_Object);
+                    Common.EntityProcess.StartSqlSugar(db =>
+                    {
+                        _Object = db.Queryable<CusInfo>()
+                                .Where(x => x.CusID == SqlFunc.ToInt32(CusID))
+                                .Select(x => new Model.CusInfo()
+                                {
+                                    CusID = x.CusID.ToString(),
+                                    CusName = x.CusName,
+                                    Count = x.Count.ToString(),
+                                    KeyText = x.KeyText
+                                }).First();
+                        if (_Object != null) { client.Add(_Object); } else { _Object = new Model.CusInfo(); }
+                    });
                 }
             }
             catch

@@ -9,7 +9,7 @@ namespace BLL
     {
         public Model.GeneralReturns PutawayInventory(Model.M_inplaceRequest S)
         {
-            Common.SystemLog.WriteSystemLog("快递交单", Common.DataHandling.ObjToJson(S));
+          
             Model.GeneralReturns genRet = new Model.GeneralReturns();
             if (string.IsNullOrEmpty(S.place_code) || string.IsNullOrEmpty(S.billcode) || string.IsNullOrEmpty(S.emp) || string.IsNullOrEmpty(S.wavehouse_name))
             {
@@ -33,7 +33,8 @@ namespace BLL
             }
             else 
             {
-                genRet.MsgText = (genRet.State = new DAL.Dal_inplace().ExecuteInplace(S)) ? "" : "上架失败";
+                genRet.State = new DAL.Dal_inplace().ExecuteInplace(S);
+                genRet.MsgText = genRet.State ? "" : "上架失败";
             }
             return genRet;
         }

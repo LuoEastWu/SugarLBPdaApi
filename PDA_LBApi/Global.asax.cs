@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -22,6 +23,16 @@ namespace PDA_LBApi
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            
+            Common.Entity.ftpPaht = Server.MapPath("~/");
+            Common.SystemLog.LogFileName = Common.Entity.ftpPaht + @"ApiLog.txt";
+            Common.Config.ConnectionString = string.Format("server={0},{1};Initial Catalog={2};Persist Security Info=True;User ID={3};Password={4}",
+                                                       ConfigurationManager.AppSettings["SqlAddress"],
+                                                       ConfigurationManager.AppSettings["SqlPort"],
+                                                       ConfigurationManager.AppSettings["DataName"],
+                                                       ConfigurationManager.AppSettings["UserName"],
+                                                       ConfigurationManager.AppSettings["PassWord"]);
         }
     }
 }

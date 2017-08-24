@@ -13,13 +13,14 @@ namespace DAL
         {
             return Common.Config.StartSqlSugar<bool>((db) =>
             {
-                return db.Updateable<pmw_order>(new pmw_order
-                {
-                    is_task = 0,
-                    taskName = String.Empty
-                })
-                                  .Where(a => a.order_code == order_code).ExecuteCommand() > 0;
-            });
+                return db.Updateable<pmw_order>()
+                         .UpdateColumns(a => new pmw_order
+                         {
+                             is_task = 0,
+                             taskName = String.Empty
+                         })
+                        .Where(a => a.order_code == order_code).ExecuteCommand() > 0;
+            });         
 
 
 

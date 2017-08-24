@@ -35,12 +35,15 @@
                     <tr><th>权限账号(<span style="color:green;">CusID</span>)</th><td>@Html.TextBoxFor(m => m.CusID, new { placeholder = "请输入分配给您的权限账号(CusID) 如未分配请联系瑞康科技" })</td></tr>
                     <tr><th>权限密钥(Key)</th><td>@Html.TextBoxFor(m => m.Key, new { placeholder = "请输入分配给您的权限密码(Key)" })</td></tr>
                     <tr><th>操作</th><td><input type="submit" name="CallApi" value="提交测试" /></td></tr>
+                    <tr><th>本次耗时(毫秒)</th><td style="color:green;">@Model.Time.ToString("0.0") Ms</td></tr>
                     <tr><th>加密标识(<span style="color:green;">KeyMd5</span>)</th><td style="color:red;">@Model.KeyMd5</td></tr>
                     <tr><th>API返回数据</th><td>@ViewBag.ReturnText</td></tr>
                 </table>
                 @Html.ValidationSummary(true)
             </div>
         }
+        <br />
+        <br />
         <div class="TitleDiv">
             RcomInfo.com 深圳瑞康科技有限公司出品
         </div>

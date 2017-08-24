@@ -17,7 +17,7 @@ namespace Model
             [Model.Mode.Mode(Rem = "店铺ID", IsNull = false)]
             public long ID { get; set; }
             [Model.Mode.Mode(Rem = "店铺名称", IsNull = false)]
-            public string name { get; set; }
+            public string Name { get; set; }
         }
     }
 }

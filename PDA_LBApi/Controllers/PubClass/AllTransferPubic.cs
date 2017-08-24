@@ -36,6 +36,7 @@ namespace Controllers
         [HttpPost]
         public string AllTransfer(String FunctionName, string JsonData, string CusID, string KeyMd5)
         {
+            Common.SystemLog.WriteSystemLog(FunctionName, JsonData);
             Model.GeneralReturns Now_RetObject = new Model.GeneralReturns();
             Now_RetObject.State = false;
             try

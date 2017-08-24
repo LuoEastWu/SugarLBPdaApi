@@ -11,44 +11,6 @@ namespace Common
 {
     public class Collections
     {
-         /// <summary>
-        /// 通用常规验证函数
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="FunctionName"></param>
-        /// <param name="JsonData"></param>
-        /// <param name="CusID"></param>
-        /// <param name="KeyMd5"></param>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        public String FormalVerification<T>(String FunctionName, String JsonData, String CusID, String KeyMd5, Func<Model.GeneralReturns, T, Model.GeneralReturns> func)
-        {
-            
-            Model.CheckBackData _RetObject =new Common.CheckPostDataValidity().CheckPostData<T>(FunctionName, JsonData, CusID, KeyMd5);
-            Model.GeneralReturns Now_RetObject = _RetObject.ReturnMode;
-
-            if (_RetObject.State)
-            {
-                var _Object = (T)_RetObject.JsonObject;
-                Now_RetObject.State = false;
-                Now_RetObject.MsgText = string.Empty;
-                try
-                {
-                    Now_RetObject = func(Now_RetObject, _Object);
-                }
-                catch (Exception ex)
-                {
-                    Now_RetObject.State = false;
-                    Now_RetObject.MsgText = ex.Message;
-                }
-            }
-
-            return Common.DataHandling.ObjToJson(Now_RetObject);
-        }
-
-
-       
-
         /// <summary>
         /// 黑猫接口帮助类
         /// </summary>

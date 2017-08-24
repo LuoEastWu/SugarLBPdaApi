@@ -20,7 +20,7 @@ namespace Common
                 ConnectionString = Config.ConnectionString, //必填
                 DbType = DbType.SqlServer, //必填
                 IsAutoCloseConnection = true, //默认false
-                InitKeyType=InitKeyType.Attribute
+                InitKeyType=InitKeyType.SystemTable
             }))
             {
                 return func(db);
@@ -39,7 +39,14 @@ namespace Common
                 InitKeyType = InitKeyType.Attribute
             }))
             {
-                func(db);
+                try
+                {
+                    func(db);
+                }
+                catch(Exception ex)
+                {
+                    Common.SystemLog.WriteSystemLog("SqlSugar", ex.Message);
+                }
             }
         }
         public static SqlSugarClient GetInstance()

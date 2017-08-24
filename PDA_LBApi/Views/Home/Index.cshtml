@@ -1,7 +1,7 @@
 ﻿@{
     Layout = null;
 }
-@Styles.Render("~/Content/css")
+<link href="~/Content/Site.css" rel="stylesheet" />
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -16,6 +16,7 @@
         <table class="TableDiv">
             <tr><th width="30%">接口调用地址</th><td width="70%">Http://@Request.Url.Host:@Request.Url.Port/Wkd/AllTransfer</td></tr>
             <tr><th>当前版本</th><td>V 1.0</td></tr>
+            <tr><th>接口规范</th><td><a href="/Home/Specification">点击查看瑞康科技API接口调用规范说明</a></td></tr>
             <tr><th>访问次数</th><td>@Common.Entity.ComeCount.ToString() 次</td></tr>
         </table>
         <br />
@@ -25,26 +26,264 @@
             {
                 var Obj = _object.GetParameters()[0].ParameterType;
                 var MethodsAttibure = (Model.Mode.ReturnClass)_object.GetCustomAttributes(typeof(Model.Mode.ReturnClass), false).FirstOrDefault();
-                //var ReturnClass = MethodsAttibure == null ? "" : MethodsAttibure.Type.ToString();
-                //var attibureClass = (Model.Mode.ModeClassAttribute)Obj.GetCustomAttributes(typeof(Model.Mode.ModeClassAttribute), false).FirstOrDefault();
+                var ReturnClass = MethodsAttibure == null || MethodsAttibure.Type == null ? "通用型返回对象" : MethodsAttibure.Type.ToString();
                 var ClassRem = MethodsAttibure == null ? String.Empty : MethodsAttibure.Rem;
                 <table class="TableDiv">
                     <tr><th width="20%">接口说明</th><td width="80%">@ClassRem</td></tr>
                     <tr><th>接口名称</th><td>@Html.ActionLink(@_object.Name, "CallTest", "CallTest", new { ControllerName = "PDA", FunctionName = @_object.Name, Rem = @ClassRem }, null)</td></tr>
                 </table>
                 <table class="TableDiv">
-                    <tr><th width="20%">参数名称</th><th width="20%">参数类型</th><th width="20%">是否可空</th><th width="60%">参数说明</th></tr>
-                    @{
-                foreach (var a in Obj.GetProperties())
-                {
-                    var attibute = (Model.Mode.ModeAttribute)a.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
-                    var Rem = attibute == null ? string.Empty : attibute.Rem;
-                    var IsNull = attibute == null ? "必填" : attibute.IsNull ? "可空" : "必填";
-                    var NowType = a.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
-                    <tr><td>@a.Name</td><td>@NowType</td><td>@IsNull</td><td>@Rem</td></tr>
-                }
+                    <tr><th width="100%">请求对象(@Obj.ToString())</th></tr>
+                </table>
+                <table class="TableDiv">
+                    <tr><th width="10%">参数名称</th><th width="10%">参数类型</th><th width="10%">可空</th><th width="10%">数组</th><th width="60%">参数说明</th></tr>
+                    @foreach (var a in Obj.GetProperties())
+                    {
+                        var attibute = (Model.Mode.ModeAttribute)a.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                        var Rem = attibute == null ? string.Empty : attibute.Rem;
+                        var IsNull = attibute == null ? "必填" : attibute.IsNull ? "可空" : "必填";
+                        var IsList = attibute == null ? "否" : attibute.IsList ? "是" : "否";
+                        var NowType = a.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                        if (attibute == null || (attibute != null && attibute.ListType == null))
+                        {
+                            <tr><td>@a.Name</td><td>@NowType</td><td>@IsNull</td><td>@IsList</td><td>@Rem</td></tr>
+                        }
                     }
                 </table>
+                <table class="TableDiv">
+                    @foreach (var a in Obj.GetProperties())
+                    {
+                        var attibute = (Model.Mode.ModeAttribute)a.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                        var Rem = attibute == null ? string.Empty : attibute.Rem;
+                        var IsNull = attibute == null ? "必填" : attibute.IsNull ? "可空" : "必填";
+                        var IsList = attibute == null ? "否" : attibute.IsList ? "是" : "否";
+                        var NowType = a.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                        NowType = IsList.Equals("是") ? "对象数组" : NowType;
+                        if (attibute != null && attibute.ListType != null)
+                        {
+                            <tr>
+                                <td width="10%">@a.Name</td>
+                                <td width="90%">
+                                    <table class="TableDiv">
+                                        <tr><th width="40%">@Rem</th><th width="15%">可空</th><td width="15%">@IsNull</td><th width="15%">数组</th><td width="15%">@IsList</td></tr>
+                                    </table>
+                                    <table class="TableDiv">
+                                        <tr><th width="10%">参数名称</th><th width="10%">参数类型</th><th width="10%">可空</th><th width="10%">数组</th><th width="60%">参数说明</th></tr>
+                                        @foreach (var b in attibute.ListType.GetProperties())
+                                        {
+                                            var attibute1 = (Model.Mode.ModeAttribute)b.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                                            var Rem1 = attibute1 == null ? string.Empty : attibute1.Rem;
+                                            var IsNull1 = attibute1 == null ? "必填" : attibute1.IsNull ? "可空" : "必填";
+                                            var IsList1 = attibute1 == null ? "否" : attibute1.IsList ? "是" : "否";
+                                            var NowType1 = b.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                                            if (attibute1 == null || (attibute1 != null && attibute1.ListType == null))
+                                            {
+                                                <tr><td>@b.Name</td><td>@NowType1</td><td>@IsNull1</td><td>@IsList1</td><td>@Rem1</td></tr>
+                                            }
+                                        }
+                                    </table>
+                                    <table class="TableDiv">
+                                        @foreach (var b in attibute.ListType.GetProperties())
+                                        {
+                                            var attibute1 = (Model.Mode.ModeAttribute)b.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                                            var Rem1 = attibute1 == null ? string.Empty : attibute1.Rem;
+                                            var IsNull1 = attibute1 == null ? "必填" : attibute1.IsNull ? "可空" : "必填";
+                                            var IsList1 = attibute1 == null ? "否" : attibute1.IsList ? "是" : "否";
+                                            var NowType1 = b.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                                            if (attibute1 != null && attibute1.ListType != null)
+                                            {
+                                                <tr>
+                                                    <td width="10%">@b.Name</td>
+                                                    <td width="90%">
+                                                        <table class="TableDiv">
+                                                            <tr><th width="40%">@Rem1</th><th width="15%">可空</th><td width="15%">@IsNull1</td><th width="15%">数组</th><td width="15%">@IsList1</td></tr>
+                                                        </table>
+                                                        <table class="TableDiv">
+                                                            <tr><th width="10%">参数名称</th><th width="10%">参数类型</th><th width="10%">可空</th><th width="10%">数组</th><th width="60%">参数说明</th></tr>
+                                                            @foreach (var c in attibute1.ListType.GetProperties())
+                                                            {
+                                                                var attibute2 = (Model.Mode.ModeAttribute)c.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                                                                var Rem2 = attibute2 == null ? string.Empty : attibute2.Rem;
+                                                                var IsNull2 = attibute2 == null ? "必填" : attibute2.IsNull ? "可空" : "必填";
+                                                                var IsList2 = attibute2 == null ? "否" : attibute2.IsList ? "是" : "否";
+                                                                var NowType2 = c.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                                                                if (attibute2 == null || (attibute2 != null && attibute2.ListType == null))
+                                                                {
+                                                                    <tr><td>@c.Name</td><td>@NowType2</td><td>@IsNull2</td><td>@IsList2</td><td>@Rem2</td></tr>
+                                                                }
+                                                            }
+                                                        </table>
+                                                        <table class="TableDiv">
+                                                            @foreach (var c in attibute1.ListType.GetProperties())
+                                                            {
+                                                                var attibute2 = (Model.Mode.ModeAttribute)c.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                                                                var Rem2 = attibute2 == null ? string.Empty : attibute2.Rem;
+                                                                var IsNull2 = attibute2 == null ? "必填" : attibute2.IsNull ? "可空" : "必填";
+                                                                var IsList2 = attibute2 == null ? "否" : attibute2.IsList ? "是" : "否";
+                                                                var NowType2 = c.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                                                                if (attibute2 != null && attibute2.ListType != null)
+                                                                {
+                                                                    <tr>
+                                                                        <td width="10%">@c.Name</td>
+                                                                        <td width="90%">
+                                                                            <table class="TableDiv">
+                                                                                <tr><th width="40%">@Rem2</th><th width="15%">可空</th><td width="15%">@IsNull2</td><th width="15%">数组</th><td width="15%">@IsList2</td></tr>
+                                                                            </table>
+                                                                            <table class="TableDiv">
+                                                                                <tr><th width="10%">参数名称</th><th width="10%">参数类型</th><th width="10%">可空</th><th width="10%">数组</th><th width="60%">参数说明</th></tr>
+                                                                                @foreach (var d in attibute2.ListType.GetProperties())
+                                                                                {
+                                                                                    var attibute3 = (Model.Mode.ModeAttribute)d.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                                                                                    var Rem3 = attibute3 == null ? string.Empty : attibute3.Rem;
+                                                                                    var IsNull3 = attibute3 == null ? "必填" : attibute3.IsNull ? "可空" : "必填";
+                                                                                    var IsList3 = attibute3 == null ? "否" : attibute3.IsList ? "是" : "否";
+                                                                                    var NowType3 = d.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                                                                                    <tr><td>@d.Name</td><td>@NowType3</td><td>@IsNull3</td><td>@IsList3</td><td>@Rem3</td></tr>
+                                                                                }
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </table>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </table>
+                <table class="TableDiv">
+                    <tr><th width="100%">返回对象(@ReturnClass)</th></tr>
+                </table>
+                if (MethodsAttibure != null && MethodsAttibure.Type != null)
+                {
+                    <table class="TableDiv">
+                        <tr><th width="10%">参数名称</th><th width="10%">参数类型</th><th width="10%">可空</th><th width="10%">数组</th><th width="60%">参数说明</th></tr>
+                        @foreach (var a in MethodsAttibure.Type.GetProperties())
+                        {
+                            var attibute = (Model.Mode.ModeAttribute)a.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                            var Rem = attibute == null ? string.Empty : attibute.Rem;
+                            var IsNull = attibute == null ? "必填" : attibute.IsNull ? "可空" : "必填";
+                            var IsList = attibute == null ? "否" : attibute.IsList ? "是" : "否";
+                            var NowType = a.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                            if (attibute == null || (attibute != null && attibute.ListType == null))
+                            {
+                                <tr><td>@a.Name</td><td>@NowType</td><td>@IsNull</td><td>@IsList</td><td>@Rem</td></tr>
+                            }
+                        }
+                    </table>
+                    <table class="TableDiv">
+                        @foreach (var a in MethodsAttibure.Type.GetProperties())
+                        {
+                            var attibute = (Model.Mode.ModeAttribute)a.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                            var Rem = attibute == null ? string.Empty : attibute.Rem;
+                            var IsNull = attibute == null ? "必填" : attibute.IsNull ? "可空" : "必填";
+                            var IsList = attibute == null ? "否" : attibute.IsList ? "是" : "否";
+                            var NowType = a.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                            NowType = IsList.Equals("是") ? "对象数组" : NowType;
+                            if (attibute != null && attibute.ListType != null)
+                            {
+                                <tr>
+                                    <td width="10%">@a.Name</td>
+                                    <td width="90%">
+                                        <table class="TableDiv">
+                                            <tr><th width="40%">@Rem</th><th width="15%">可空</th><td width="15%">@IsNull</td><th width="15%">数组</th><td width="15%">@IsList</td></tr>
+                                        </table>
+                                        <table class="TableDiv">
+                                            <tr><th width="10%">参数名称</th><th width="10%">参数类型</th><th width="10%">可空</th><th width="10%">数组</th><th width="60%">参数说明</th></tr>
+                                            @foreach (var b in attibute.ListType.GetProperties())
+                                            {
+                                                var attibute1 = (Model.Mode.ModeAttribute)b.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                                                var Rem1 = attibute1 == null ? string.Empty : attibute1.Rem;
+                                                var IsNull1 = attibute1 == null ? "必填" : attibute1.IsNull ? "可空" : "必填";
+                                                var IsList1 = attibute1 == null ? "否" : attibute1.IsList ? "是" : "否";
+                                                var NowType1 = b.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                                                if (attibute1 == null || (attibute1 != null && attibute1.ListType == null))
+                                                {
+                                                    <tr><td>@b.Name</td><td>@NowType1</td><td>@IsNull1</td><td>@IsList1</td><td>@Rem1</td></tr>
+                                                }
+                                            }
+                                        </table>
+                                        <table class="TableDiv">
+                                            @foreach (var b in attibute.ListType.GetProperties())
+                                            {
+                                                var attibute1 = (Model.Mode.ModeAttribute)b.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                                                var Rem1 = attibute1 == null ? string.Empty : attibute1.Rem;
+                                                var IsNull1 = attibute1 == null ? "必填" : attibute1.IsNull ? "可空" : "必填";
+                                                var IsList1 = attibute1 == null ? "否" : attibute1.IsList ? "是" : "否";
+                                                var NowType1 = b.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                                                if (attibute1 != null && attibute1.ListType != null)
+                                                {
+                                                    <tr>
+                                                        <td width="10%">@b.Name</td>
+                                                        <td width="90%">
+                                                            <table class="TableDiv">
+                                                                <tr><th width="40%">@Rem1</th><th width="15%">可空</th><td width="15%">@IsNull1</td><th width="15%">数组</th><td width="15%">@IsList1</td></tr>
+                                                            </table>
+                                                            <table class="TableDiv">
+                                                                <tr><th width="10%">参数名称</th><th width="10%">参数类型</th><th width="10%">可空</th><th width="10%">数组</th><th width="60%">参数说明</th></tr>
+                                                                @foreach (var c in attibute1.ListType.GetProperties())
+                                                                {
+                                                                    var attibute2 = (Model.Mode.ModeAttribute)c.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                                                                    var Rem2 = attibute2 == null ? string.Empty : attibute2.Rem;
+                                                                    var IsNull2 = attibute2 == null ? "必填" : attibute2.IsNull ? "可空" : "必填";
+                                                                    var IsList2 = attibute2 == null ? "否" : attibute2.IsList ? "是" : "否";
+                                                                    var NowType2 = c.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                                                                    if (attibute2 == null || (attibute2 != null && attibute2.ListType == null))
+                                                                    {
+                                                                        <tr><td>@c.Name</td><td>@NowType2</td><td>@IsNull2</td><td>@IsList2</td><td>@Rem2</td></tr>
+                                                                    }
+                                                                }
+                                                            </table>
+                                                            <table class="TableDiv">
+                                                                @foreach (var c in attibute1.ListType.GetProperties())
+                                                                {
+                                                                    var attibute2 = (Model.Mode.ModeAttribute)c.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                                                                    var Rem2 = attibute2 == null ? string.Empty : attibute2.Rem;
+                                                                    var IsNull2 = attibute2 == null ? "必填" : attibute2.IsNull ? "可空" : "必填";
+                                                                    var IsList2 = attibute2 == null ? "否" : attibute2.IsList ? "是" : "否";
+                                                                    var NowType2 = c.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                                                                    if (attibute2 != null && attibute2.ListType != null)
+                                                                    {
+                                                                        <tr>
+                                                                            <td width="10%">@c.Name</td>
+                                                                            <td width="90%">
+                                                                                <table class="TableDiv">
+                                                                                    <tr><th width="40%">@Rem2</th><th width="15%">可空</th><td width="15%">@IsNull2</td><th width="15%">数组</th><td width="15%">@IsList2</td></tr>
+                                                                                </table>
+                                                                                <table class="TableDiv">
+                                                                                    <tr><th width="10%">参数名称</th><th width="10%">参数类型</th><th width="10%">可空</th><th width="10%">数组</th><th width="60%">参数说明</th></tr>
+                                                                                    @foreach (var d in attibute2.ListType.GetProperties())
+                                                                                    {
+                                                                                        var attibute3 = (Model.Mode.ModeAttribute)d.GetCustomAttributes(typeof(Model.Mode.ModeAttribute), false).FirstOrDefault();
+                                                                                        var Rem3 = attibute3 == null ? string.Empty : attibute3.Rem;
+                                                                                        var IsNull3 = attibute3 == null ? "必填" : attibute3.IsNull ? "可空" : "必填";
+                                                                                        var IsList3 = attibute3 == null ? "否" : attibute3.IsList ? "是" : "否";
+                                                                                        var NowType3 = d.PropertyType.ToString().Replace("System.", "").Replace("Collections.Generic.List`1", "List");
+                                                                                        <tr><td>@d.Name</td><td>@NowType3</td><td>@IsNull3</td><td>@IsList3</td><td>@Rem3</td></tr>
+                                                                                    }
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </table>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                }
+                <br />
                 <br />
             }
         }

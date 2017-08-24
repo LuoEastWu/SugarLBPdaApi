@@ -54,10 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddRequestData.cs" />
     <Compile Include="ApiMode.cs" />
     <Compile Include="Base.cs" />
-    <Compile Include="CheckPostDataValidity.cs" />
     <Compile Include="ClientInfo.cs" />
     <Compile Include="CodeFirst.cs" />
     <Compile Include="Collections.cs" />

@@ -8,14 +8,6 @@ namespace SqlSugar
 {
     public partial class DefaultDbMethod : IDbMethods
     {
-        public virtual string IIF(MethodCallExpressionModel model)
-        {
-            var parameter = model.Args[0];
-            var parameter2 = model.Args[1];
-            var parameter3 = model.Args[2];
-            return string.Format("( CASE  WHEN {0} THEN {1}  ELSE {2} END )", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
-        }
-
         public virtual string ToDateTime(MethodCallExpressionModel model)
         {
             var parameter1 = model.Args[0];
@@ -28,16 +20,27 @@ namespace SqlSugar
             var parameter = model.Args[0];
             return string.Format("IsNull({0},'')", parameter.MemberName);
         }
+
         public virtual string IsNullToInt(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format("IsNull({0},0)", parameter.MemberName);
         }
+
         public virtual string IsNullToInt64(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format("IsNull({0},0)", parameter.MemberName);
         }
+
+        public virtual string IIF(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            return string.Format("( CASE  WHEN {0} THEN {1}  ELSE {2} END )", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
+        }
+
         public virtual string IsNullOrEmpty(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -131,7 +134,7 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" (DATEDIFF({2},{0},{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
+            return string.Format(" (DATEDIFF({2},{0},{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberValue);
         }
 
         public virtual string DateAddByType(MethodCallExpressionModel model)
@@ -139,7 +142,7 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" (DATEADD({2},{1},{0})) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
+            return string.Format(" (DATEADD({2},{1},{0})) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberValue);
         }
 
         public virtual string DateAddDay(MethodCallExpressionModel model)
@@ -175,7 +178,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" ({0}({1})) ", parameter2.MemberName, parameter.MemberName);
+            return string.Format(" DateName({0},{1}) ", parameter2.MemberValue, parameter.MemberName);
         }
 
         public virtual string ToInt32(MethodCallExpressionModel model)

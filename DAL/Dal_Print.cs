@@ -16,16 +16,16 @@ namespace DAL
         /// <returns></returns>
         public pmw_order getOrderInfo(long id)
         {
-            return Common.Config.StartSqlSugar<pmw_order>((db) => 
+            return Common.Config.StartSqlSugar<pmw_order>((db) =>
             {
                 return db.Queryable<pmw_order>()
                          .Where(a => a.id == id)
                          .First();
             });
-                                
-                                
+
+
         }
-       
+
         /// <summary>
         /// 获取快递表信息
         /// </summary>
@@ -33,11 +33,11 @@ namespace DAL
         /// <returns></returns>
         public List<pmw_billcode> getBillcodeInfo(List<string> kd_billcode)
         {
-            return Common.Config.StartSqlSugar<List<pmw_billcode>>((db)=>
+            return Common.Config.StartSqlSugar<List<pmw_billcode>>((db) =>
             {
                 return db.Queryable<pmw_billcode>()
                          .In(a => a.kd_billcode, kd_billcode)
-                         .ToList();              
+                         .ToList();
             });
         }
 
@@ -48,11 +48,11 @@ namespace DAL
         /// <returns></returns>
         public pmw_member getMemberInfo(long member_id)
         {
-            return Common.Config.StartSqlSugar<pmw_member>((db)=>
+            return Common.Config.StartSqlSugar<pmw_member>((db) =>
             {
                 return db.Queryable<pmw_member>()
                          .Where(a => a.id == member_id)
-                         .First();                 
+                         .First();
             });
         }
         /// <summary>
@@ -106,13 +106,16 @@ namespace DAL
         /// </summary>
         /// <param name="goodsName"></param>
         /// <returns></returns>
-        public GoodsCatalog getGoodsTypeInfo(string goodsName)
+        public GoodsCatalog getGoodsTypeInfo(string billcode)
         {
             return Common.Config.StartSqlSugar((db) =>
             {
-                return db.Queryable<GoodsCatalog>()
-                         .Where(a => a.goodsName == goodsName)
-                         .First();
+                return db.Queryable<GoodsCatalog, pmw_billcode>((a, b) => new object[]
+                {
+                    JoinType.Left,a.goodsName==b.goodsTyep&&a.id==b.goods_id
+                })
+                .Where((a, b) => b.kd_billcode == billcode)
+                .First();
             });
 
         }
@@ -185,7 +188,7 @@ namespace DAL
                                     .Where(a => a.ForwarderID == id && SqlFunc.IsNullToInt(a.is_Use) == 0)
                                     .OrderBy(a => a.num)
                                     .First();
-                  db.Updateable<Forwarder_number>(new 
+                  db.Updateable<Forwarder_number>(new
                   {
                       is_Use = 1
                   })
@@ -201,12 +204,12 @@ namespace DAL
         /// <returns></returns>
         public int getForwardingAgentNoCount(long ForwardingID)
         {
-           return Common.Config.StartSqlSugar<int>((db) => 
-            {
-                return db.Queryable<Forwarder_number>()
-                         .Where(a => SqlFunc.IsNullToInt(a.is_Use) == 0 && a.ForwarderID == ForwardingID)
-                         .Count();
-            });
+            return Common.Config.StartSqlSugar<int>((db) =>
+             {
+                 return db.Queryable<Forwarder_number>()
+                          .Where(a => SqlFunc.IsNullToInt(a.is_Use) == 0 && a.ForwarderID == ForwardingID)
+                          .Count();
+             });
         }
 
         /// <summary>
@@ -224,7 +227,7 @@ namespace DAL
         /// <param name="S"></param>
         /// <param name="printNo"></param>
         /// <returns></returns>
-        public bool Print(pmw_order orderInfo, string orderSentBillCode, string orderSentCompany, string recipients, pmw_house houserInfo, TaoBaoInfo tbInfo, Forwarder forwarderInfo, List<string> billCoderList, string goodsName, Model.M_Print.Request S, string printNo, double weightBillcode)
+        public bool Print(pmw_order orderInfo, string orderSentBillCode, string orderSentCompany, string recipients, pmw_house houserInfo, TaoBaoInfo tbInfo, Forwarder forwarderInfo,string[] billCoderList, string goodsName, Model.M_Print.Request S, string printNo, double weightBillcode)
         {
             return Common.Config.StartSqlSugar<bool>((db) =>
             {
@@ -239,7 +242,7 @@ namespace DAL
                         operateTime = DateTime.Now,
                         WaybillNo = printNo,
                         z_weight = SqlFunc.ToDecimal(weightBillcode)
-                    });
+                    }).ExecuteCommand();
                     db.Insertable<pmw_track>(new pmw_track
                     {
                         billcode = printNo,
@@ -248,9 +251,9 @@ namespace DAL
                         scan_memo = "拣货完毕,快件已拣货完毕,正在打包",
                         scan_site = houserInfo.house_name,
                         scan_emp = S.operateMan
-                    });
-
-                    db.Updateable<pmw_billcode>(new 
+                    }).ExecuteCommand();
+                   
+                    db.Updateable<pmw_billcode>(new
                     {
                         is_packed = 1,
                         packed_time = DateTime.Now,
@@ -261,10 +264,10 @@ namespace DAL
                         printID = forwarderInfo.id,
                         is_Big = S.is_Big
                     })
-                    .Where(a => SqlFunc.ContainsArray(billCoderList.ToArray(), a.kd_billcode) && a.order_code == orderInfo.order_code && (SqlFunc.IsNullToInt(a.is_lock) == 0 || SqlFunc.IsNullToInt(a.is_lock) == 2))
+                    .Where(a => SqlFunc.ContainsArray(billCoderList, a.kd_billcode) && a.order_code == orderInfo.order_code && (SqlFunc.IsNullToInt(a.is_lock) == 0 || SqlFunc.IsNullToInt(a.is_lock) == 2))
                     .ExecuteCommand();
 
-                    db.Updateable<pmw_order>(new 
+                    db.Updateable<pmw_order>(new
                     {
                         is_sented = 1,
                         sent_emp = S.operateMan,
@@ -286,7 +289,7 @@ namespace DAL
                         recipientsAdd = orderInfo.address,
                         recipientsPhone = orderInfo.mobile,
                         recipientsIDCard = orderInfo.RecipientCode,
-                        TurnNumber = billCoderList.Count,
+                        TurnNumber = billCoderList.Length,
                         Order_Notes = orderInfo.order_memo,
                         consolidator = tbInfo.Name,
                         deliveryCom = forwarderInfo.ForwarderName,
@@ -301,7 +304,7 @@ namespace DAL
                         houseID = houserInfo.id,
                         houseName = houserInfo.house_name,
                         netWeight = SqlFunc.ToDecimal(weightBillcode)
-                    });
+                    }).ExecuteCommand();
                 }).IsSuccess;
             });
 

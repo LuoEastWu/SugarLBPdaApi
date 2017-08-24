@@ -20,7 +20,7 @@ namespace DAL
             {
                 return db.Queryable<pmw_order>()
                          .Any(a => a.order_code == out_barcode && SqlFunc.IsNullToInt(a.is_outplace) == 1);
-                         
+
             });
 
         }
@@ -31,13 +31,13 @@ namespace DAL
         /// <returns></returns>
         public bool OrderNotOutBillcode(string out_barcode)
         {
-            return Common.Config.StartSqlSugar<bool>((db)=>
+            return Common.Config.StartSqlSugar<bool>((db) =>
             {
                 return db.Queryable<pmw_billcode>()
                          .Any(a => a.order_code == out_barcode && SqlFunc.IsNullToInt(a.is_outplace) == 0);
-                               
+
             });
-                                
+
         }
         /// <summary>
         /// 下架订单
@@ -47,21 +47,22 @@ namespace DAL
         /// <returns></returns>
         public bool OutOrder(string out_barcode, string scan_emp)
         {
-            return Common.Config.StartSqlSugar<bool>((db)=>
+            return Common.Config.StartSqlSugar<bool>((db) =>
             {
-                return db.Updateable<pmw_order>(new pmw_order
-                {
-                    Abnormal = false,//异常拣货时完成时改变状态
-                    is_outplace = 1,
-                    outplace_time = DateTime.Now,
-                    outplace_emp = scan_emp,
-                    Is_Operator = false,
-                    is_task = 0,//释放拣货任务
-                    taskName = string.Empty
-                })
-                                .Where(a => a.order_code == out_barcode).ExecuteCommand() > 0;
+                return db.Updateable<pmw_order>()
+                         .UpdateColumns(a => new pmw_order()
+                         {
+                             Abnormal = false,//异常拣货时完成时改变状态
+                             is_outplace = 1,
+                             outplace_time = DateTime.Now,
+                             outplace_emp = scan_emp,
+                             Is_Operator = false,
+                             is_task = 0,//释放拣货任务
+                             taskName = string.Empty
+                         })
+                        .Where(a => a.order_code == out_barcode).ExecuteCommand() > 0;
             });
-                               
+
         }
         /// <summary>
         /// 订单下架失败后
@@ -69,7 +70,7 @@ namespace DAL
         /// <param name="out_barcode"></param>
         public void OutOrderLoser(string out_barcode)
         {
-            Common.Config.StartSqlSugar((db) => 
+            Common.Config.StartSqlSugar((db) =>
             {
                 db.Ado.UseTran(() =>
                 {
@@ -91,7 +92,7 @@ namespace DAL
                     .ExecuteCommand();
                 });
             });
-           
+
         }
 
     }

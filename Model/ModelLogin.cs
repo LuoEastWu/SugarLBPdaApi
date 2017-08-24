@@ -29,6 +29,7 @@ namespace Model
         /// </summary>
         public class LoginReturn
         {
+            [ModeAttribute(Rem = "登陆密码", IsNull = false)]
             public string Uid { get; set; }
             /// <summary>
             /// 用户名

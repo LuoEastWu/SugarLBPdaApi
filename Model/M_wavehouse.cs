@@ -11,6 +11,7 @@ namespace Model
         {
 
         }
+        [Model.Mode.Mode(Rem = "仓库信息集合", IsNull = true, IsList = true, ListType = typeof(Return))]
         public List<Return> houseInfo { get; set; }
         public class Return
         {

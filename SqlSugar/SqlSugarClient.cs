@@ -78,16 +78,17 @@ namespace SqlSugar
 
         #region Queryable
         /// <summary>
-        /// 查询数据
+        /// Lambda Query operation
         /// </summary>
         public virtual ISugarQueryable<T> Queryable<T>() where T : class, new()
         {
+
             InitMppingInfo<T>();
             var result = base.CreateQueryable<T>();
             return result;
         }
         /// <summary>
-        /// 查询数据
+        /// Lambda Query operation
         /// </summary>
         public virtual ISugarQueryable<T> Queryable<T>(string shortName) where T : class, new()
         {
@@ -96,7 +97,7 @@ namespace SqlSugar
             return queryable;
         }
         /// <summary>
-        /// 查询数据
+        /// Lambda Query operation
         /// </summary>
         public virtual ISugarQueryable<ExpandoObject> Queryable(string tableName, string shortName)
         {
@@ -105,13 +106,6 @@ namespace SqlSugar
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, object[]>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2>();
@@ -120,14 +114,6 @@ namespace SqlSugar
             base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, object[]>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3>();
@@ -136,15 +122,6 @@ namespace SqlSugar
             base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object[]>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4>();
@@ -153,16 +130,6 @@ namespace SqlSugar
             base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <typeparam name="T5"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, object[]>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4, T5>();
@@ -171,17 +138,6 @@ namespace SqlSugar
             base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <typeparam name="T5"></typeparam>
-        /// <typeparam name="T6"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, object[]>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4, T5, T6>();
@@ -190,18 +146,6 @@ namespace SqlSugar
             base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <typeparam name="T5"></typeparam>
-        /// <typeparam name="T6"></typeparam>
-        /// <typeparam name="T7"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, object[]>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4, T5, T6>();
@@ -210,19 +154,6 @@ namespace SqlSugar
             base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <typeparam name="T5"></typeparam>
-        /// <typeparam name="T6"></typeparam>
-        /// <typeparam name="T7"></typeparam>
-        /// <typeparam name="T8"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object[]>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4, T5, T6, T8>();
@@ -231,13 +162,40 @@ namespace SqlSugar
             base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
+        #region  9-12
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object[]>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(base.CurrentConnectionConfig);
+            base.CreateQueryJoin(joinExpression, types, queryable);
+            return queryable;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object[]>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9, T10>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(base.CurrentConnectionConfig);
+            base.CreateQueryJoin(joinExpression, types, queryable);
+            return queryable;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, object[]>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9, T10, T11>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(base.CurrentConnectionConfig);
+            base.CreateQueryJoin(joinExpression, types, queryable);
+            return queryable;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, object[]>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9, T10, T11, T12>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(base.CurrentConnectionConfig);
+            base.CreateQueryJoin(joinExpression, types, queryable);
+            return queryable;
+        }
+        #endregion
         public virtual ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, bool>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2>();
@@ -247,14 +205,6 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, bool>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3>();
@@ -264,15 +214,6 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, bool>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4>();
@@ -282,16 +223,6 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <typeparam name="T5"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4, T5>();
@@ -301,17 +232,6 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <typeparam name="T5"></typeparam>
-        /// <typeparam name="T6"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4, T5, T6>();
@@ -321,18 +241,6 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <typeparam name="T5"></typeparam>
-        /// <typeparam name="T6"></typeparam>
-        /// <typeparam name="T7"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4, T5, T6>();
@@ -342,19 +250,6 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <typeparam name="T5"></typeparam>
-        /// <typeparam name="T6"></typeparam>
-        /// <typeparam name="T7"></typeparam>
-        /// <typeparam name="T8"></typeparam>
-        /// <param name="joinExpression"></param>
-        /// <returns></returns>
         public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4, T5, T6, T8>();
@@ -364,12 +259,46 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
-        /// <summary>
-        /// 连接两个查询结果 Union
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryables"></param>
-        /// <returns></returns>
+
+        #region 9-12
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8,T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, bool>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T8,T9>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8),typeof(T9) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9>(base.CurrentConnectionConfig);
+            base.CreateEasyQueryJoin(joinExpression, types, queryable);
+            queryable.Where(joinExpression);
+            return queryable;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, bool>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9,T10>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9) ,typeof(T10)};
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>(base.CurrentConnectionConfig);
+            base.CreateEasyQueryJoin(joinExpression, types, queryable);
+            queryable.Where(joinExpression);
+            return queryable;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, bool>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9, T10,T11>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10),typeof(T11) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>(base.CurrentConnectionConfig);
+            base.CreateEasyQueryJoin(joinExpression, types, queryable);
+            queryable.Where(joinExpression);
+            return queryable;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9, T10, T11, T12>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11),typeof(T12) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(base.CurrentConnectionConfig);
+            base.CreateEasyQueryJoin(joinExpression, types, queryable);
+            queryable.Where(joinExpression);
+            return queryable;
+        }
+        #endregion
+
         public virtual List<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
         {
             if (queryables.IsNullOrEmpty()) return new List<T>();
@@ -384,12 +313,6 @@ namespace SqlSugar
             }
             return result;
         }
-        /// <summary>
-        /// 连接两个查询结果 Union
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryables"></param>
-        /// <returns></returns>
         public virtual List<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {
             if (queryables.IsNullOrEmpty()) return new List<T>();
@@ -398,45 +321,21 @@ namespace SqlSugar
         #endregion
 
         #region Insertable
-        /// <summary>
-        /// 插入数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="insertObj"></param>
-        /// <returns></returns>
         public virtual IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
             InitMppingInfo<T>();
             InsertableProvider<T> reval = base.CreateInsertable(insertObjs);
             return reval;
         }
-        /// <summary>
-        /// 插入数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="insertObj"></param>
-        /// <returns></returns>
         public virtual IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
         {
             Check.ArgumentNullException(insertObjs, "Insertable.insertObjs can't be null");
             return this.Insertable(insertObjs.ToArray());
         }
-        /// <summary>
-        /// 插入数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="insertObj"></param>
-        /// <returns></returns>
         public virtual IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
         {
             return this.Insertable(new T[] { insertObj });
         }
-        /// <summary>
-        /// 插入数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="insertObj"></param>
-        /// <returns></returns>
         public virtual IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
             InitMppingInfo<T>();
@@ -445,12 +344,6 @@ namespace SqlSugar
             var columns = columnDictionary.Select(it => it.Key).ToList();
             return this.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c,StringComparison.CurrentCultureIgnoreCase))); ;
         }
-        /// <summary>
-        /// 插入数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="insertObj"></param>
-        /// <returns></returns>
         public virtual IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new()
         {
             InitMppingInfo<T>();
@@ -469,72 +362,37 @@ namespace SqlSugar
         #endregion
 
         #region Deleteable
-        /// <summary>
-        /// 删除数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IDeleteable<T> Deleteable<T>() where T : class, new()
         {
             InitMppingInfo<T>();
             DeleteableProvider<T> reval = base.CreateDeleteable<T>();
             return reval;
         }
-        /// <summary>
-        /// 删除数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IDeleteable<T> Deleteable<T>(Expression<Func<T, bool>> expression) where T : class, new()
         {
             InitMppingInfo<T>();
             return this.Deleteable<T>().Where(expression);
         }
-        /// <summary>
-        /// 删除数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new()
         {
             InitMppingInfo<T>();
             return this.Deleteable<T>().In(primaryKeyValue);
         }
-        /// <summary>
-        /// 删除数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new()
         {
             InitMppingInfo<T>();
             return this.Deleteable<T>().In(primaryKeyValues);
         }
-        /// <summary>
-        /// 删除数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IDeleteable<T> Deleteable<T>(List<dynamic> pkValue) where T : class, new()
         {
             InitMppingInfo<T>();
             return this.Deleteable<T>().In(pkValue);
         }
-        /// <summary>
-        /// 删除数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IDeleteable<T> Deleteable<T>(T deleteObj) where T : class, new()
         {
             InitMppingInfo<T>();
             return this.Deleteable<T>().Where(deleteObj);
         }
-        /// <summary>
-        /// 删除数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IDeleteable<T> Deleteable<T>(List<T> deleteObjs) where T : class, new()
         {
             InitMppingInfo<T>();
@@ -543,50 +401,25 @@ namespace SqlSugar
         #endregion
 
         #region Updateable
-        /// <summary>
-        /// 更新数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
         {
             InitMppingInfo<T>();
             UpdateableProvider<T> reval = base.CreateUpdateable(UpdateObjs);
             return reval;
         }
-        /// <summary>
-        /// 更新数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IUpdateable<T> Updateable<T>(List<T> UpdateObjs) where T : class, new()
         {
             Check.ArgumentNullException(UpdateObjs, "Updateable.UpdateObjs can't be null");
             return Updateable(UpdateObjs.ToArray());
         }
-        /// <summary>
-        /// 更新数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
         {
             return this.Updateable(new T[] { UpdateObj });
         }
-        /// <summary>
-        /// 更新数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IUpdateable<T> Updateable<T>() where T : class, new()
         {
             return this.Updateable(new T[] { new T() });
         }
-        /// <summary>
-        /// 更新数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
             InitMppingInfo<T>();
@@ -595,11 +428,6 @@ namespace SqlSugar
             var columns = columnDictionary.Select(it => it.Key).ToList();
             return this.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
         }
-        /// <summary>
-        /// 更新数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public virtual IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new()
         {
             InitMppingInfo<T>();

@@ -15,7 +15,7 @@ namespace BLL
 
             if (!string.IsNullOrEmpty(S.repair))
             {
-                return SupplementPrint(genRet,S);
+                return SupplementPrint(genRet, S);
             }
 
             if (String.IsNullOrEmpty(S.operateMan) || String.IsNullOrEmpty(S.operateSite) || null == S.PackaginBillcode || S.PackaginBillcode.Count == 0)
@@ -27,11 +27,20 @@ namespace BLL
             {
                 List<Model.M_Print.Return> reqList = new List<Model.M_Print.Return>();
                 pmw_order orderInfo = new DAL.Dal_Print().getOrderInfo(long.Parse(S.orderID));
-                int subcontractCount = orderInfo.subpackageNum < 1 ? 1 : int.Parse(orderInfo.subpackageNum.ToString());
+                int subcontractCount = 0;
+                if (orderInfo.subpackageNum == null || orderInfo.subpackageNum < 1)
+                {
+                    subcontractCount = 1;
+                }
+                else
+                {
+                    subcontractCount = int.Parse(orderInfo.subpackageNum.ToString());
+                }
+
 
                 for (int i = 1; i <= subcontractCount; i++)
                 {
-                   
+
                     if (orderInfo == null)
                     {
                         genRet.MsgText = "无法获取订单信息";
@@ -59,7 +68,7 @@ namespace BLL
                         #region 代收货款
                         var collectingMoney = orderInfo.pay_type == 1 ? (orderInfo.country_free + orderInfo.agencyFund) : orderInfo.agencyFund;
                         #endregion
-                       
+
 
                         GoodsCatalog goodsInfo = new DAL.Dal_Print().getGoodsTypeInfo(S.PackaginBillcode[0].billcode);
                         if (goodsInfo == null)
@@ -95,36 +104,23 @@ namespace BLL
                             genRet.MsgText = "无法获取航班时效信息";
                             return genRet;
                         }
-
-
-                        if (orderInfo.agencyFund <= 0 && orderInfo.pay_type != 1 && S.express.Contains("黑猫") && !S.express.Contains("不代收"))
-                        {
-                            S.express = S.express + "不代收";
-                        }
-                        else if (S.express.Contains("黑猫") && !S.express.Contains("代收"))
-                        {
-                            S.express = S.express + "代收";
-                        }
-                        PrintConfig printConfigInfo = new DAL.Dal_Print()
-                        .getPrinConfig(S.express);
+                        PrintConfig printConfigInfo = PrintConfigInfo(orderInfo, S.express);
                         if (printConfigInfo == null)
                         {
                             genRet.MsgText = "无法获取打印配置信息";
                             return genRet;
                         }
 
-                        Forwarder forwarderInfo = new DAL.Dal_Print().getForwarderCode(S.express, printConfigInfo.pjCode);
+                        Forwarder forwarderInfo = new DAL.Dal_Print().getForwarderCode(printConfigInfo.pjCom, printConfigInfo.pjCode);
                         if (forwarderInfo == null)
                         {
                             genRet.MsgText = "无法获取派件公司信息";
                             return genRet;
                         }
                         string printNo = new DAL.Dal_Print().getPrintNo(forwarderInfo.id);
-                       
-                        
                         if (string.IsNullOrEmpty(printNo))
                         {
-                            genRet.MsgText ="无法获取单号";
+                            genRet.MsgText = "无法获取单号";
                             return genRet;
                         }
 
@@ -139,19 +135,41 @@ namespace BLL
                                 SiteOrUser = new string[] { "客服" }
                             }, false);
                         }
-                   
-                          string recipients = new DAL.Dal_Print().getRecipientName(orderInfo.cname, orderInfo.id);
-                        bool dbPrint = new DAL.Dal_Print().Print(orderInfo, string.IsNullOrEmpty(orderInfo.sent_kd_billcode) ? printNo: orderInfo.sent_kd_billcode + "," + printNo, S.express.Contains("黑猫") ? "黑猫宅急便" : S.express, recipients, houseInfo, shopInfo, forwarderInfo, billcodeList, strBuiGoodsName.ToString(), S, printNo, billcodeWeight);
+
+                        string recipients = new DAL.Dal_Print().getRecipientName(orderInfo.cname, orderInfo.id);
+
+                        bool dbPrint = new DAL.Dal_Print().Print(orderInfo, string.IsNullOrEmpty(orderInfo.sent_kd_billcode) ? printNo : orderInfo.sent_kd_billcode + "," + printNo, S.express.Contains("黑猫") ? "黑猫宅急便" : S.express, recipients, houseInfo, shopInfo, forwarderInfo, billcodeList.ToArray(), strBuiGoodsName.ToString(), S, printNo, billcodeWeight);
                         if (!dbPrint)
                         {
                             genRet.MsgText = "无法生成运单";
                             return genRet;
                         }
 
-                       
-                      
-                        string SignerCode=string.Empty, VersionCode=string.Empty,   addressCode=string.Empty;
-                        PushDataEjs(recipients, S.express, billcodeWeight, strBuiGoodsName.ToString(), printNo, houseInfo.house_name, orderInfo, houseInfo, memberInfo, ref SignerCode, ref VersionCode, ref addressCode, ref message);
+
+                        if (printConfigInfo.pjCom.Contains("国阳"))
+                        {
+                            ApiHelp.GYHelper gyApi = new ApiHelp.GYHelper();
+                            gyApi.AddData(new ApiHelp.GYHelper.Data()
+                            {
+                                SentType = S.express.Contains("取货") ? "A02" : "A01",
+                                Signer = recipients,
+                                SignAddress = orderInfo.address,
+                                SignPhone = orderInfo.mobile,
+                                SignEmail = memberInfo.email,
+                                StoreName = S.express.Contains("取货")?recipients:"",
+                                StoreCode =  S.express.Contains("取货")?orderInfo.customerCode:"",
+                                StoreAddress = S.express.Contains("取货")?orderInfo.address:"",
+                                StorePhone =S.express.Contains("取货")?orderInfo.mobile:"",
+                                OrderCode = printNo,
+                                GoodsName = strBuiGoodsName.ToString(),
+                                GoodsAccount = billcodeList.Count,
+                                DsMoney = (int)collectingMoney,
+                                Weight = (int)billcodeWeight,
+                                SentFastType = GyTransferCompanyCode(S.express)
+                            });
+                            gyApi.ToCsv(Common.Entity.ftpPaht, true);
+                        }
+
 
                         reqList.Add(new Model.M_Print.Return
                         {
@@ -173,13 +191,12 @@ namespace BLL
                             IdentificationGoods = strBuiGoodsType.ToString().Contains("特") ? "T" : "",
                             ds_mdgj_Free = orderInfo.pay_type == 1 ? Math.Round(Convert.ToDecimal(orderInfo.agencyFund + orderInfo.country_free), 2).ToString() : "0",
                             DFFeer = orderInfo.pay_type == 1 ? Math.Round(Convert.ToDecimal(orderInfo.agencyFund + orderInfo.country_free), 2).ToString() : orderInfo.agencyFund.ToString(),
-                            addressCode=addressCode,
-                            goodsName=strBuiGoodsName.ToString(),
-                            SignerCode=SignerCode,
-                            VersionCode=VersionCode
+                            addressCode = printNo.Substring(6),
+                            goodsName = strBuiGoodsName.ToString()
                         });
                         genRet.State = true;
-                        genRet.Mb = S.express.Replace("代收", "").Replace("不", "");
+                        genRet.Mb = S.express;
+                        genRet.ReturnJson = Common.DataHandling.ObjToJson(reqList);
                         genRet.MsgText = S.operateMan;
                     }
 
@@ -188,6 +205,38 @@ namespace BLL
 
             return genRet;
         }
+
+
+
+        /// <summary>
+        /// 获取打印配置
+        /// </summary>
+        /// <param name="orderInfo"></param>
+        /// <param name="kdComanpy"></param>
+        /// <returns></returns>
+        public PrintConfig PrintConfigInfo(pmw_order orderInfo, string kdComanpy)
+        {
+            if (kdComanpy.Contains("黑猫"))
+            {
+                if (orderInfo.agencyFund <= 0 && orderInfo.pay_type != 1 && !kdComanpy.Contains("不代收"))
+                {
+                    kdComanpy = kdComanpy + "不代收";
+                }
+                else if (!kdComanpy.Contains("代收"))
+                {
+                    kdComanpy = kdComanpy + "代收";
+                }
+                return new DAL.Dal_Print()
+            .getPrinConfig(kdComanpy);
+            }
+            else
+            {
+                return new DAL.Dal_Print()
+            .getPrinConfig("国阳");
+            }
+
+        }
+
         /// <summary>
         /// 是否能打包
         /// </summary>
@@ -251,7 +300,7 @@ namespace BLL
         /// <param name="gr"></param>
         /// <param name="S"></param>
         /// <returns></returns>
-        private Model.GeneralReturns SupplementPrint( Model.GeneralReturns gr, Model.M_Print.Request S)
+        private Model.GeneralReturns SupplementPrint(Model.GeneralReturns gr, Model.M_Print.Request S)
         {
             if (String.IsNullOrEmpty(S.operateMan) || String.IsNullOrEmpty(S.operateSite))
             {
@@ -285,7 +334,7 @@ namespace BLL
                 gr.MsgText = "无法获取航班信息";
                 return gr;
             }
-            string SignerCode=string.Empty, VersionCode=string.Empty,   addressCode=string.Empty;
+            string SignerCode = string.Empty, VersionCode = string.Empty, addressCode = string.Empty;
             secondEJSPushData(pringInfo.deliveryCom, pringInfo.recipientsAdd, out SignerCode, out VersionCode, out addressCode);
             reqList.Add(new Model.M_Print.Return
             {
@@ -295,7 +344,7 @@ namespace BLL
                 Js_number = (int)pringInfo.TurnNumber,
                 briefCode = pringInfo.deliveryCode,
                 goodsType = billcodeInfo.goodsTyep,
-                goodsName=pringInfo.goods,
+                goodsName = pringInfo.goods,
                 shopName = pringInfo.consolidator,
                 OrderGoodsNotes = orderInfo.OrderGoodsNotes,
                 CusCode = pringInfo.deliveryCode,
@@ -308,197 +357,66 @@ namespace BLL
                 IdentificationGoods = billcodeInfo.goodsTyep.Contains("特") ? "T" : "",
                 ds_mdgj_Free = orderInfo.pay_type == 1 ? Math.Round(Convert.ToDecimal(pringInfo.freightPayable + orderInfo.country_free), 2).ToString() : "0",
                 DFFeer = orderInfo.pay_type == 1 ? Math.Round(Convert.ToDecimal(pringInfo.freightPayable + orderInfo.country_free), 2).ToString() : pringInfo.freightPayable.ToString(),
-                addressCode=addressCode,
-                SignerCode=SignerCode,
-                VersionCode=VersionCode
+                addressCode = addressCode,
+                SignerCode = SignerCode,
+                VersionCode = VersionCode
             });
+            gr.ReturnJson = DataHandling.ObjToJson(reqList);
+            gr.State = true;
             return gr;
 
         }
 
 
+
+
+
         /// <summary>
-        /// 推送资料
+        /// 获取发货物流编号
         /// </summary>
-        /// <param name="cname"></param>
-        /// <param name="expressCompany"></param>
-        /// <param name="billWeight"></param>
-        /// <param name="Goods"></param>
-        /// <param name="BillCodeNum"></param>
-        /// <param name="wavehouse"></param>
-        /// <param name="orderInfo"></param>
-        /// <param name="houseInfo"></param>
-        /// <param name="memberInfo"></param>
-        /// <param name="SignerCode"></param>
-        /// <param name="VersionCode"></param>
-        /// <param name="addressCode"></param>
-        /// <param name="message"></param>
+        /// <param name="comPanyName"></param>
         /// <returns></returns>
-        private  bool PushDataEjs(string cname, string expressCompany, double billWeight, string Goods, string BillCodeNum, string wavehouse, pmw_order orderInfo, pmw_house houseInfo, pmw_member memberInfo, ref string SignerCode,string collectingMoney, ref string VersionCode, ref string addressCode, ref string message,string gyNumber="")
+        private int GyTransferCompanyCode(string comPanyName)
         {
-            bool pushBoo = false;
-            billWeight = billWeight <= 0 ? 1 : billWeight;
-
-            if (expressCompany.Contains("黑猫"))
+            if (comPanyName.Contains("邮局"))
             {
-
-
-                try
-                {
-                    Common.Collections.HmHelper Hm = new Common.Collections.HmHelper();
-
-                    string HmGooods = String.Empty;
-                    if (Goods.Length > 30)
-                    {
-                        HmGooods = Goods.Substring(0, 29);
-                    }
-
-                    var hmData = new Common.Collections.HmHelper.Data()
-                    {
-                        HmBillCode = BillCodeNum,
-                        OrderCode = orderInfo.id.ToString(),
-                        GoodsName = HmGooods,
-                        Rem = orderInfo.order_memo,
-                        SentDate = DateTime.Now.ToString("yyyyMMddHHmmss"),
-                        Senter = memberInfo.username,
-                        SenterAddress = houseInfo.house_add,
-                        SenterPhone = memberInfo.mobile,
-                        SenterTel = memberInfo.telephone,
-                        Signer = cname.Trim(),
-                        SignerAddress = orderInfo.address,
-                        SignerPhone = orderInfo.mobile.Trim(),
-                        SignerTel = orderInfo.mobile2,
-                        Client = memberInfo.id.ToString(),
-                        Dshk_Money = (int)orderInfo.agencyFund
-                    };
-
-                    Hm.AddData(hmData);
-
-                    SignerCode = hmData.SignerZip;
-                    VersionCode =Common.Collections.HmHelper.VisonNo.egs_version;
-                    addressCode =Common.Collections.HmHelper.query_suda7(hmData.SignerAddress).suda7_1;
-
-                    pushBoo = Hm.ToEOD(Common.Entity.ftpPaht, true);
-                    Common.SystemLog.WriteSystemLog("黑猫推送文件：", pushBoo.ToString());
-                    Common.SystemLog.WriteSystemLog("Hm", pushBoo.ToString());
-                }
-                catch (Exception ex)
-                {
-
-                    message = ex.Message;
-                    Common.SystemLog.WriteSystemLog("黑猫保存xls错误：", ex.Message);
-                }
-
+                return 1;
             }
-            else if (expressCompany.Contains("超峰"))
+            else if (comPanyName.Contains("宅配通"))
             {
-
-
-
-                try
-                {
-                    String Cid = "0233";
-                    if (expressCompany.Contains("小"))
-                    {
-                        Cid = "0234";
-                    }
-
-                    Common.Collections.CFHelper Cf = new Common.Collections.CFHelper();
-                    Common.Collections.CFHelper.Data cfdata = new Common.Collections.CFHelper.Data()
-                    {
-                        SentSite = "AF",
-                        ClientID = Cid,
-                        Senter = memberInfo.username,
-                        SenterPhone = memberInfo.mobile,
-                        SenterAddress = houseInfo.house_add,
-                        SentDate = DateTime.Now.Date.ToString("yyyy-MM-dd"),
-                        ClientOrderNo = BillCodeNum,
-                        Signer = cname.Trim(),
-                        SignerPhone = orderInfo.mobile.Trim(),
-                        SignerAddress = orderInfo.address.Trim(),
-                        CFBillCode = BillCodeNum,
-                        GoodsName = "貨件",
-                        GoodsCount = "1",
-                        GoodsWeight = (int)billWeight,
-                        Rem = "派前電聯",
-                        PackNo = orderInfo.id.ToString(),
-                        GetMoney = (int)orderInfo.agencyFund
-                    };
-
-                    Cf.AddData(cfdata);
-                    SignerCode = cfdata.SignSite;
-                    pushBoo = Cf.ToExecl(Common.Entity.ftpPaht, true);
-
-                    Common.SystemLog.WriteSystemLog("超峰推送文件：", pushBoo.ToString());
-
-                }
-                catch (Exception ex)
-                {
-                    message = ex.Message;
-                    Common.SystemLog.WriteSystemLog("超峰保存xls错误：", ex.Message);
-                }
-
+                return 2;
             }
-            else if (expressCompany.Contains("国阳"))
+            else if (comPanyName.Contains("黑猫"))
             {
-                
+                return 3;
             }
-            return pushBoo;
+            else if (comPanyName.Contains("萊爾富"))
+            {
+                return 4;
+            }
+            else if (comPanyName.Contains("OK"))
+            {
+                return 5;
+            }
+            else if (comPanyName.Contains("7‐11"))
+            {
+                return 6;
+            }
+            else if (comPanyName.Contains("全家"))
+            {
+                return 7;
+            }
+            else if (comPanyName.Contains("立邦"))
+            {
+                return 8;
+            }
+            else if (comPanyName.Contains("新竹"))
+            {
+                return 9;
+            }
+            return 0;
 
         }
-        /// <summary>
-        /// 国阳推送
-        /// </summary>
-        /// <param name="deliveryMethod">發貨方式 填入'A01'為宅配檔、'A02' 為超商檔</param>
-        /// <param name="recipients">收件人</param>
-        /// <param name="direction">收件人地址 若發貨方式為"宅配"請填入正確地址</param>
-        /// <param name="recipientCellPhone">收件人行動電話</param>
-        /// <param name="orderNumber">訂單編號 請填入區段編號</param>
-        /// <param name="productName">商品名稱</param>
-        /// <param name="quantityCommodity">商品數量</param>
-        /// <param name="collectingMoney">代收货款</param>
-        /// <param name="remark"> 備註 請填入大號</param>
-        /// <param name="weight"> 重量 請以克重 g 為單位</param>
-        /// <param name="shippingLogistics"> 發貨物流 1.郵局2.宅配通3.黑貓4.超商</param>
-        /// <param name="recipientEmail">收件人電子郵件</param>
-        /// <param name="outletsName">門市名稱 若發貨方式為"超商"門市代碼 此為必塡</param>
-        /// <param name="outletsCode">門市代碼 若發貨方式為"超商"門市代碼 此為必塡</param>
-        /// <param name="outletsAddress">門市地址 若發貨方式為"超商"門市代碼 此為必塡</param>
-        /// <param name="outletsPhone">門市電話 若發貨方式為"超商"門市代碼 此為必塡</param>
-        public void pushDataGy(string deliveryMethod, string recipients, string direction, string recipientCellPhone, string orderNumber, string productName, string quantityCommodity, string collectingMoney, string remark, string weight, string shippingLogistics, string recipientEmail = "", string outletsName = "", string outletsCode = "", string outletsAddress = "", string outletsPhone) 
-        {
-
-            if (deliveryMethod == "'A02")
-            {
-                if (string.IsNullOrEmpty(outletsName) || string.IsNullOrEmpty(outletsCode) || string.IsNullOrEmpty(outletsAddress) || string.IsNullOrEmpty(outletsPhone))
-                {
-                    return;
-                }
-            }
-
-            ApiHelp.GyDataInfo gyInfo = new ApiHelp.GyDataInfo()
-            {
-                deliveryMethod = deliveryMethod,
-                recipients = recipients,
-                direction = direction,
-                recipientCellPhone = recipientCellPhone,
-                recipientEmail = recipientEmail,
-                outletsName = outletsName,
-                outletsCode = outletsCode,
-                outletsAddress = outletsAddress,
-                outletsPhone = outletsPhone,
-                orderNumber = orderNumber,
-                productName = productName,
-                quantityCommodity = quantityCommodity,
-                collectingMoney = collectingMoney,
-                remark = remark,
-                weight = weight,
-                shippingLogistics = shippingLogistics,
-            };
-            ApiHelp.GYApi gyA = new ApiHelp.GYApi();
-            gyA.GyFtp(gyA.GyDataTable(gyInfo), Common.Entity.ftpPaht + "\\ApiSentData\\Dv_YYYYMMDD_XXXXXXXXXX_HHii.csv");
-        }
-
 
         /// <summary>
         /// 补打单EJS
@@ -508,7 +426,7 @@ namespace BLL
         /// <param name="SignerCode"></param>
         /// <param name="VersionCode"></param>
         /// <param name="addressCode"></param>
-        private  void secondEJSPushData(String MDKDCOM, string address, out String SignerCode, out String VersionCode, out string addressCode)
+        private void secondEJSPushData(String MDKDCOM, string address, out String SignerCode, out String VersionCode, out string addressCode)
         {
 
             if (MDKDCOM.Contains("黑猫"))
@@ -518,10 +436,10 @@ namespace BLL
                 SignerCode = bb.suda7_1 != null && bb.suda7_1.Replace("-", "").Length > 5 ? bb.suda7_1.Replace("-", "").Substring(bb.suda7_1.Replace("-", "").Length - 5) : "";
                 VersionCode = Common.Collections.HmHelper.VisonNo.egs_version;
                 addressCode = Common.Collections.HmHelper.query_suda7(address).suda7_1;
-             
+
                 try
                 {
-                    Hm.ToEOD(Common.Entity.HmPaht, true);
+                    Hm.ToEOD(Common.Entity.ftpPaht, true);
                 }
                 catch (Exception ex)
                 {

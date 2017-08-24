@@ -93,6 +93,8 @@ namespace Model.Mode
             /// 当前加密后的数据
             /// </summary>
             public string KeyMd5 { get; set; }
+
+            public Decimal Time { get; set; }
         }
 
         /// <summary>

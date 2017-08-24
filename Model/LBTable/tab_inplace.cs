@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using SqlSugar;
 
 namespace Model.LBTable
 {
@@ -12,6 +13,7 @@ namespace Model.LBTable
         /// Default:- 
         /// Nullable:False 
         /// </summary>
+        [SugarColumn(IsIdentity = true)]
         public Int64 id {get;set;}
 
         /// <summary>

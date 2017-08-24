@@ -51,11 +51,13 @@ namespace PDA_EJEAPI.Controllers
             }
             if (ModelState.IsValid)
             {
+                DateTime Dt = DateTime.Now;
                 var _Object = Common.ApiMode.GetNameValueCollection(model);
                 _object.KeyMd5 = _Object.GetValues("KeyMd5")[0];
                 string Url = string.Empty;
                 Url = "http://" + Request.Url.Host + ":" + Request.Url.Port + "/" + model.ControllerName + "/AllTransfer";
                 ViewBag.ReturnText = Common.HttpHelper.Send(Url, System.Text.Encoding.UTF8, _Object);
+                _object.Time = (Decimal)(DateTime.Now - Dt).TotalMilliseconds;
                 return View(_object);
             }
             else

@@ -20,8 +20,7 @@ namespace DAL
           return  Common.Config.StartSqlSugar<bool>((db)=>
           {
               return db.Queryable<pmw_billcode>()
-                         .Where(a => a.kd_billcode == kd_billcode && a.order_code == out_barcode)
-                         .Any();
+                       .Any(a => a.kd_billcode == kd_billcode && a.order_code == out_barcode);
           });
                          
         }
@@ -50,7 +49,8 @@ namespace DAL
         {
             return Common.Config.StartSqlSugar<bool>((db)=>
             {
-                return db.Updateable<pmw_billcode>(new pmw_billcode
+                return db.Updateable<pmw_billcode>()
+                         .UpdateColumns(a=>new pmw_billcode()
                          {
                              is_outplace = 1,
                              outplace_time = DateTime.Now,

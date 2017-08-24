@@ -10,7 +10,7 @@ namespace BLL
     {
         public Model.GeneralReturns GetOrderDetail(Model.M_OffShelf.OffShelfRequest S)
         {
-           
+
             Model.GeneralReturns genRet = new Model.GeneralReturns();
             if (string.IsNullOrEmpty(S.areaCode) || String.IsNullOrEmpty(S.Operator) || String.IsNullOrEmpty(S.site))
             {
@@ -22,20 +22,20 @@ namespace BLL
             {
                 if (String.IsNullOrEmpty(S.OrderID))
                 {
-                    if (S.country_id == 0)
-                    { genRet.MsgText = "员工没有所属国家ID"; }
+                    pmw_admin adminInfo = new DAL.DalGet_order_detail().GetShopNameIDArray(S.Operator);
+                    if (adminInfo == null || String.IsNullOrEmpty(adminInfo.shop_name))
+                    {
+                        genRet.MsgText = "无法获取员工管理店铺";
+                    }
                     else
                     {
-                        if (new DAL.DalGet_order_detail().NationalInspection(S.country_id))
+                        orderInfo = RegionalPicking(adminInfo.shop_name.Split(','), S.site, S.areaCode);
+                        if (orderInfo == null || string.IsNullOrEmpty(orderInfo.order_code))
                         {
-                            orderInfo = RegionalPicking(S.country_id, S.site, S.areaCode);
-                            if (orderInfo == null || string.IsNullOrEmpty(orderInfo.order_code))
-                            {
-                                genRet.MsgText = "没有拣货任务了";
-                            }
+                            genRet.MsgText = "没有拣货任务了";
                         }
-                        else { genRet.MsgText = "国家ID错误"; }
                     }
+
                 }
                 else
                 {
@@ -54,7 +54,12 @@ namespace BLL
             }
             if (orderInfo != null && !string.IsNullOrEmpty(orderInfo.order_code))
             {
+                new DAL.DalGet_order_detail().Release_task(orderInfo.id, S.Operator, 1);
                 genRet = GetOrderDetailTask(orderInfo, S.Operator, S.site);
+            }
+            else 
+            {
+                genRet.MsgText = "无法获取改单号信息";
             }
 
             return genRet;
@@ -68,12 +73,12 @@ namespace BLL
         /// <param name="site"></param>
         /// <param name="areaCodeArr"></param>
         /// <returns></returns>
-        public pmw_order RegionalPicking(int country_id, string site, string areaCodeArr)
+        public pmw_order RegionalPicking(string[] shopNameArray, string site, string areaCodeArr)
         {
             pmw_order orderInfo = new pmw_order();
             foreach (var areaCode in areaCodeArr.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
-                orderInfo = new DAL.DalGet_order_detail().RegionalPicking(country_id, site, areaCode);
+                orderInfo = new DAL.DalGet_order_detail().RegionalPicking(shopNameArray, site, areaCode);
                 if (orderInfo != null && !string.IsNullOrEmpty(orderInfo.order_code))
                 {
                     break;
@@ -92,17 +97,16 @@ namespace BLL
         {
             Model.GeneralReturns gr = new Model.GeneralReturns();
             Model.M_OffShelf.OffShelfListRuturn offSheListRet = new Model.M_OffShelf.OffShelfListRuturn();
-           offSheListRet.OffShelfRuturn = new DAL.DalGet_order_detail().PickingTask(operatorName, site, orderInfo);
-           
+            offSheListRet.OffShelfRuturn = new DAL.DalGet_order_detail().PickingTask(operatorName, site, orderInfo);
+
             if (offSheListRet.OffShelfRuturn.Count > 0)
             {
-                new DAL.DalGet_order_detail().Release_task(orderInfo.id, operatorName);
                 gr.ReturnJson = Common.DataHandling.ObjToJson(offSheListRet);
                 gr.State = true;
             }
             else
             {
-                
+                new DAL.DalGet_order_detail().Release_task(orderInfo.id, operatorName, 0);
                 gr.MsgText = "无法获取" + orderInfo.id + "！请重试";
             }
             return gr;

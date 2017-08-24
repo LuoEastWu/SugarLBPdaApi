@@ -15,12 +15,13 @@ namespace BLL
             if(pee.PD.Count>0)
             {
                 genRet.ReturnJson=Common.DataHandling.ObjToJson(pee);
-                genRet.State=true;
+               
             }
             else
             {
                 genRet.MsgText="获取失败";
             }
+            genRet.State = true;
             return genRet;
         }
     }

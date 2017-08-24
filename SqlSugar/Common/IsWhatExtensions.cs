@@ -28,12 +28,6 @@ namespace SqlSugar
             return inValues.Any(it => thisValue.Contains(it));
         }
 
-        public static string IsNullEmpty(this object thisValue)
-        {
-            if (thisValue == null || thisValue == DBNull.Value) return "";
-            return thisValue.ToString();
-        }
-
         public static int IsNullInt(this object thisValue)
         {
             if (thisValue == null || thisValue == DBNull.Value) return 0;
@@ -50,6 +44,12 @@ namespace SqlSugar
         {
             if (thisValue == null || thisValue == DBNull.Value) return 0;
             return thisValue.ObjToLong();
+        }
+
+        public static string IsNullEmpty(this object thisValue)
+        {
+            if (thisValue == null || thisValue == DBNull.Value) return "";
+            return thisValue.ToString();
         }
 
         public static bool IsNullOrEmpty(this object thisValue)

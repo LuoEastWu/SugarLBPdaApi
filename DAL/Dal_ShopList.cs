@@ -17,7 +17,7 @@ namespace DAL
                                 .Select<Model.M_ShopList.Return>(a => new Model.M_ShopList.Return
                                 {
                                     ID = a.ID,
-                                    name = a.Name
+                                    Name = a.Name
                                 }).ToList();
             });
 

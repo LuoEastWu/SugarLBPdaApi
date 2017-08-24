@@ -53,5 +53,9 @@ namespace Model.Mode
         /// 字段类型
         /// </summary>
         public String Type { get; set; }
+
+        public Boolean IsList { get; set; }
+
+        public Type ListType { get; set; }
     }
 }

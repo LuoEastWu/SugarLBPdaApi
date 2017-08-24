@@ -19,9 +19,10 @@ namespace PDA_LBApi.Controllers
        /// </summary>
        /// <param name="S"></param>
        /// <returns></returns>
-        [ReturnClass(null, "会员登录")]
+        [ReturnClass(typeof(LoginMode.LoginReturn), "会员登录")]
         private Model.GeneralReturns Login(LoginMode.LoginRequest S)
         {
+           
             return new BLL.Bll_Login().Login(S);
         }
 
@@ -265,7 +266,7 @@ namespace PDA_LBApi.Controllers
         /// <param name="CusID"></param>
         /// <param name="KeyMd5"></param>
         /// <returns></returns>
-        [ReturnClass(null, "获取仓库列表")]
+        [ReturnClass(typeof(Model.M_wavehouse), "获取仓库列表")]
         private Model.GeneralReturns wavehouseList(Model.M_wavehouse.Request S)
         {
 
