@@ -63,9 +63,9 @@ namespace DAL
                              JoinType.Left,a.member_id==d.id
                          })
                          .Where((a, b, c, d) => SqlFunc.IsNullToInt(a.DoubleCheck) == 1 && SqlFunc.IsNullToInt(a.is_payed) == 1 && SqlFunc.IsNullToInt(a.is_outplace) == 0 && SqlFunc.IsNullToInt(a.Abnormal) == 0 && SqlFunc.IsNullToInt(a.is_task) == 0 && SqlFunc.HasValue(a.order_code))
-                         .Where((a, b, c, d) => SqlFunc.ContainsArray(shopNameArray, d.astro))
-                         .Where((a, b, c, d) => SqlFunc.IsNullToInt(b.is_outplace) == 0 && b.wavehouse == site)
+                         .Where((a, b, c, d) => SqlFunc.IsNullToInt(b.is_outplace) == 0&&SqlFunc.IsNullToInt(b.is_inplace)==1 && b.wavehouse == site)
                          .Where((a, b, c, d) => c.wavehouse_bigarea_name == areaCode)
+                         .Where((a, b, c, d) => SqlFunc.ContainsArray(shopNameArray, d.astro))
                          .First();
             });
 

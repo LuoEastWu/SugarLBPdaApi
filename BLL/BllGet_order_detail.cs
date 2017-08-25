@@ -26,16 +26,14 @@ namespace BLL
                     if (adminInfo == null || String.IsNullOrEmpty(adminInfo.shop_name))
                     {
                         genRet.MsgText = "无法获取员工管理店铺";
+                        return genRet;
                     }
-                    else
+                    orderInfo = RegionalPicking(adminInfo.shop_name.Split(','), S.site, S.areaCode);
+                    if (orderInfo == null || string.IsNullOrEmpty(orderInfo.order_code))
                     {
-                        orderInfo = RegionalPicking(adminInfo.shop_name.Split(','), S.site, S.areaCode);
-                        if (orderInfo == null || string.IsNullOrEmpty(orderInfo.order_code))
-                        {
-                            genRet.MsgText = "没有拣货任务了";
-                        }
+                        genRet.MsgText = "没有拣货任务了";
+                        return genRet;
                     }
-
                 }
                 else
                 {
@@ -57,7 +55,7 @@ namespace BLL
                 new DAL.DalGet_order_detail().Release_task(orderInfo.id, S.Operator, 1);
                 genRet = GetOrderDetailTask(orderInfo, S.Operator, S.site);
             }
-            else 
+            else
             {
                 genRet.MsgText = "无法获取改单号信息";
             }
@@ -106,7 +104,7 @@ namespace BLL
             }
             else
             {
-                new DAL.DalGet_order_detail().Release_task(orderInfo.id, operatorName, 0);
+                new DAL.DalGet_order_detail().Release_task(orderInfo.id,string.Empty, 0);
                 gr.MsgText = "无法获取" + orderInfo.id + "！请重试";
             }
             return gr;

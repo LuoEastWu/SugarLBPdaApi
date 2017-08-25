@@ -1,6 +1,7 @@
 ﻿using Common;
 using Model.LBTable;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace BLL
 {
     public class Bll_Print
     {
+      
         public Model.GeneralReturns Print(Model.M_Print.Request S)
         {
             Model.GeneralReturns genRet = new Model.GeneralReturns();
@@ -117,19 +119,20 @@ namespace BLL
                             genRet.MsgText = "无法获取派件公司信息";
                             return genRet;
                         }
-                        string printNo = new DAL.Dal_Print().getPrintNo(forwarderInfo.id);
-                        if (string.IsNullOrEmpty(printNo))
+
+                        Forwarder_number forwarderNoInfo = new DAL.Dal_Print().getPrintNo(forwarderInfo.id);
+                        if (forwarderNoInfo == null || string.IsNullOrEmpty(forwarderNoInfo.num))
                         {
                             genRet.MsgText = "无法获取单号";
                             return genRet;
                         }
-
+                        string printNo = forwarderNoInfo.num;
                         if (new DAL.Dal_Print().getForwardingAgentNoCount(forwarderInfo.id) < 2001)
                         {
                             var SentState1 = FastSocket.MaeesgeSend(new MassgeClass()
                             {
                                 IsSite = true,
-                                Mags = S.express,
+                                Mags = forwarderInfo.ForwarderName,
                                 MagsID = "0",
                                 Mags_Type = "HmOrderCount",
                                 SiteOrUser = new string[] { "客服" }
@@ -141,6 +144,7 @@ namespace BLL
                         bool dbPrint = new DAL.Dal_Print().Print(orderInfo, string.IsNullOrEmpty(orderInfo.sent_kd_billcode) ? printNo : orderInfo.sent_kd_billcode + "," + printNo, S.express.Contains("黑猫") ? "黑猫宅急便" : S.express, recipients, houseInfo, shopInfo, forwarderInfo, billcodeList.ToArray(), strBuiGoodsName.ToString(), S, printNo, billcodeWeight);
                         if (!dbPrint)
                         {
+                            new DAL.Dal_Print().ReleaseForwarder_number(forwarderNoInfo);
                             genRet.MsgText = "无法生成运单";
                             return genRet;
                         }
@@ -156,10 +160,10 @@ namespace BLL
                                 SignAddress = orderInfo.address,
                                 SignPhone = orderInfo.mobile,
                                 SignEmail = memberInfo.email,
-                                StoreName = S.express.Contains("取货")?recipients:"",
-                                StoreCode =  S.express.Contains("取货")?orderInfo.customerCode:"",
-                                StoreAddress = S.express.Contains("取货")?orderInfo.address:"",
-                                StorePhone =S.express.Contains("取货")?orderInfo.mobile:"",
+                                StoreName = S.express.Contains("取货") ? recipients : "",
+                                StoreCode = S.express.Contains("取货") ? orderInfo.customerCode : "",
+                                StoreAddress = S.express.Contains("取货") ? orderInfo.address : "",
+                                StorePhone = S.express.Contains("取货") ? orderInfo.mobile : "",
                                 OrderCode = printNo,
                                 GoodsName = strBuiGoodsName.ToString(),
                                 GoodsAccount = billcodeList.Count,
@@ -192,7 +196,8 @@ namespace BLL
                             ds_mdgj_Free = orderInfo.pay_type == 1 ? Math.Round(Convert.ToDecimal(orderInfo.agencyFund + orderInfo.country_free), 2).ToString() : "0",
                             DFFeer = orderInfo.pay_type == 1 ? Math.Round(Convert.ToDecimal(orderInfo.agencyFund + orderInfo.country_free), 2).ToString() : orderInfo.agencyFund.ToString(),
                             addressCode = printNo.Substring(6),
-                            goodsName = strBuiGoodsName.ToString()
+                            goodsName = strBuiGoodsName.ToString(),
+                            chargedWeight = orderInfo.Free_Weight.ToString()
                         });
                         genRet.State = true;
                         genRet.Mb = S.express;
@@ -359,10 +364,13 @@ namespace BLL
                 DFFeer = orderInfo.pay_type == 1 ? Math.Round(Convert.ToDecimal(pringInfo.freightPayable + orderInfo.country_free), 2).ToString() : pringInfo.freightPayable.ToString(),
                 addressCode = addressCode,
                 SignerCode = SignerCode,
-                VersionCode = VersionCode
+                VersionCode = VersionCode,
+                chargedWeight = orderInfo.Free_Weight.ToString()
             });
             gr.ReturnJson = DataHandling.ObjToJson(reqList);
             gr.State = true;
+            gr.Mb = orderInfo.sent_kd_com;
+            gr.MsgText = S.operateMan;
             return gr;
 
         }

@@ -181,6 +181,13 @@ namespace Model
             /// </summary>
             [Model.Mode.Mode(Rem = "货物标识", IsNull = false)]
             public string IdentificationGoods { get; set; }
+
+            /// <summary>
+            /// 计费重量
+            /// </summary>
+            [Model.Mode.Mode(Rem = "计费重量", IsNull = false)]
+            public string  chargedWeight { get; set; }
+
         }
     }
 }

@@ -174,29 +174,54 @@ namespace DAL
 
         }
 
+        private object lockQueryNo = new object();
         /// <summary>
-        /// 获取打印号
+        /// 获取打印号信息
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public string getPrintNo(long id)
+        public Forwarder_number getPrintNo(long id)
         {
-            var db = Common.Config.GetInstance();
-            return db.Ado.UseTran<string>(() =>
-              {
-                  var forderInfo = db.Queryable<Forwarder_number>()
-                                    .Where(a => a.ForwarderID == id && SqlFunc.IsNullToInt(a.is_Use) == 0)
-                                    .OrderBy(a => a.num)
-                                    .First();
-                  db.Updateable<Forwarder_number>(new
-                  {
-                      is_Use = 1
-                  })
-                  .Where(a => a.ForwarderID == id && a.num == forderInfo.num)
-                  .ExecuteCommand();
-                  return forderInfo.num;
-              }).Data;
+            lock (lockQueryNo)
+            {
+                return Common.Config.StartSqlSugar<Forwarder_number>((db) =>
+                {
+                    return db.Ado.UseTran<Forwarder_number>(() =>
+                    {
+                        var forderInfo = db.Queryable<Forwarder_number>()
+                                           .Where(a => a.ForwarderID == id && SqlFunc.IsNullToInt(a.is_Use) == 0)
+                                           .OrderBy(a => a.num)
+                                           .First();
+                        db.Updateable<Forwarder_number>(new
+                        {
+                            is_Use = 1
+                        })
+                        .Where(a => a.ForwarderID == id && a.num == forderInfo.num)
+                        .ExecuteCommand();
+                        return forderInfo;
+                    }).Data;
+                });
+            }
         }
+
+        /// <summary>
+        /// 释放承运商单号
+        /// </summary>
+        /// <param name="id"></param>
+        public void ReleaseForwarder_number(Forwarder_number forNumInfo) 
+        {
+            Common.Config.StartSqlSugar((db) => 
+            {
+                db.Updateable<Forwarder_number>(new
+                {
+                    is_Use = 1
+                })
+                .Where(a => a.ForwarderID == forNumInfo.id && a.num == forNumInfo.num)
+                .ExecuteCommand();
+            });
+          
+        }
+
         /// <summary>
         /// 返回剩余单号数量
         /// </summary>
@@ -227,7 +252,7 @@ namespace DAL
         /// <param name="S"></param>
         /// <param name="printNo"></param>
         /// <returns></returns>
-        public bool Print(pmw_order orderInfo, string orderSentBillCode, string orderSentCompany, string recipients, pmw_house houserInfo, TaoBaoInfo tbInfo, Forwarder forwarderInfo,string[] billCoderList, string goodsName, Model.M_Print.Request S, string printNo, double weightBillcode)
+        public bool Print(pmw_order orderInfo, string orderSentBillCode, string orderSentCompany, string recipients, pmw_house houserInfo, TaoBaoInfo tbInfo, Forwarder forwarderInfo, string[] billCoderList, string goodsName, Model.M_Print.Request S, string printNo, double weightBillcode)
         {
             return Common.Config.StartSqlSugar<bool>((db) =>
             {
@@ -252,7 +277,7 @@ namespace DAL
                         scan_site = houserInfo.house_name,
                         scan_emp = S.operateMan
                     }).ExecuteCommand();
-                   
+
                     db.Updateable<pmw_billcode>(new
                     {
                         is_packed = 1,

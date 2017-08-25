@@ -96,7 +96,7 @@ namespace DAL
                         create_time = DateTime.Now
                     })
                     .ExecuteCommand();
-                    db.Updateable<pmw_billcode>(new
+                    db.Updateable<pmw_billcode>(new 
                     {
                         stock_area = S.place_code.ToUpper(),
                         is_inplace = 1,
