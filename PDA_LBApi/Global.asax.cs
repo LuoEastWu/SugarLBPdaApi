@@ -26,6 +26,7 @@ namespace PDA_LBApi
 
             
             Common.Entity.ftpPaht = Server.MapPath("~/");
+            Common.Entity.SocketPaht = Server.MapPath("~/") + @"Config.ini";
             Common.SystemLog.LogFileName = Common.Entity.ftpPaht + @"ApiLog.txt";
             Common.Config.ConnectionString = string.Format("server={0},{1};Initial Catalog={2};Persist Security Info=True;User ID={3};Password={4}",
                                                        ConfigurationManager.AppSettings["SqlAddress"],

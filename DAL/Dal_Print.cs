@@ -252,7 +252,7 @@ namespace DAL
         /// <param name="S"></param>
         /// <param name="printNo"></param>
         /// <returns></returns>
-        public bool Print(pmw_order orderInfo, string orderSentBillCode, string orderSentCompany, string recipients, pmw_house houserInfo, TaoBaoInfo tbInfo, Forwarder forwarderInfo, string[] billCoderList, string goodsName, Model.M_Print.Request S, string printNo, double weightBillcode)
+        public bool Print(pmw_order orderInfo, string orderSentBillCode, string orderSentCompany, string recipients, pmw_house houserInfo, TaoBaoInfo tbInfo, Forwarder forwarderInfo, string[] billCoderList,StringBuilder strBuiBillcode,int billcodeCount, string goodsName, Model.M_Print.Request S, string printNo, double weightBillcode)
         {
             return Common.Config.StartSqlSugar<bool>((db) =>
             {
@@ -314,7 +314,7 @@ namespace DAL
                         recipientsAdd = orderInfo.address,
                         recipientsPhone = orderInfo.mobile,
                         recipientsIDCard = orderInfo.RecipientCode,
-                        TurnNumber = billCoderList.Length,
+                        TurnNumber = billcodeCount,
                         Order_Notes = orderInfo.order_memo,
                         consolidator = tbInfo.Name,
                         deliveryCom = forwarderInfo.ForwarderName,
@@ -325,7 +325,7 @@ namespace DAL
                         CFpacked_code = forwarderInfo.ForwarderCode,
                         CFpacked_emp = S.operateMan,
                         CFpacked_kd_com = forwarderInfo.ForwarderName,
-                        KD_billcodeList = string.Join(",", billCoderList.ToArray().ToString()),
+                        KD_billcodeList = strBuiBillcode.ToString(),
                         houseID = houserInfo.id,
                         houseName = houserInfo.house_name,
                         netWeight = SqlFunc.ToDecimal(weightBillcode)

@@ -1307,7 +1307,7 @@ namespace Common
                 }
                 return true;
             }
-            var NowList =EntityProcess.ServerList.Where(x => x.Value.NowServer).ToArray()[0];
+            var NowList =Common.Entity.ServerList.Where(x => x.Value.NowServer).ToArray()[0];
             IPAddress ip = IPAddress.Parse(NowList.Value.IP);
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
@@ -1327,7 +1327,7 @@ namespace Common
                 {
                     NowList.Value.ServerState = false;
                     NowList.Value.NowServer = false;
-                    NowList = EntityProcess.ServerList.Where(y => y.Key > NowList.Key || NowList.Key == EntityProcess.ServerList.Count - 1 || y.Value.ServerState).OrderBy(x => !x.Value.ServerState).ToArray()[0];
+                    NowList = Common.Entity.ServerList.Where(y => y.Key > NowList.Key || NowList.Key == Common.Entity.ServerList.Count - 1 || y.Value.ServerState).OrderBy(x => !x.Value.ServerState).ToArray()[0];
                     NowList.Value.NowServer = true;
                     SocketState = false;
                     ClientSocket = null;

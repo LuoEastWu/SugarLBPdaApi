@@ -10,7 +10,7 @@ namespace BLL
 {
     public class Bll_Print
     {
-      
+
         public Model.GeneralReturns Print(Model.M_Print.Request S)
         {
             Model.GeneralReturns genRet = new Model.GeneralReturns();
@@ -129,19 +129,32 @@ namespace BLL
                         string printNo = forwarderNoInfo.num;
                         if (new DAL.Dal_Print().getForwardingAgentNoCount(forwarderInfo.id) < 2001)
                         {
-                            var SentState1 = FastSocket.MaeesgeSend(new MassgeClass()
+                            try
                             {
-                                IsSite = true,
-                                Mags = forwarderInfo.ForwarderName,
-                                MagsID = "0",
-                                Mags_Type = "HmOrderCount",
-                                SiteOrUser = new string[] { "客服" }
-                            }, false);
+                                var SentState1 = FastSocket.MaeesgeSend(new MassgeClass()
+                                {
+                                    IsSite = true,
+                                    Mags = forwarderInfo.ForwarderName,
+                                    MagsID = "0",
+                                    Mags_Type = "HmOrderCount",
+                                    SiteOrUser = new string[] { "客服" }
+                                }, false);
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
                         }
 
                         string recipients = new DAL.Dal_Print().getRecipientName(orderInfo.cname, orderInfo.id);
+                        StringBuilder strBuiBill = new StringBuilder();
 
-                        bool dbPrint = new DAL.Dal_Print().Print(orderInfo, string.IsNullOrEmpty(orderInfo.sent_kd_billcode) ? printNo : orderInfo.sent_kd_billcode + "," + printNo, S.express.Contains("黑猫") ? "黑猫宅急便" : S.express, recipients, houseInfo, shopInfo, forwarderInfo, billcodeList.ToArray(), strBuiGoodsName.ToString(), S, printNo, billcodeWeight);
+                        foreach (string strbill in billcodeList.ToArray())
+                        {
+                            strBuiBill.Append(strBuiBill.Length < 1 ? strbill : "," + strBuiBill);
+                        }
+
+                        bool dbPrint = new DAL.Dal_Print().Print(orderInfo, string.IsNullOrEmpty(orderInfo.sent_kd_billcode) ? printNo : orderInfo.sent_kd_billcode + "," + printNo, S.express.Contains("黑猫") ? "黑猫宅急便" : S.express, recipients, houseInfo, shopInfo, forwarderInfo, billcodeList.ToArray(), strBuiBill, billcodeList.Count, strBuiGoodsName.ToString(), S, printNo, billcodeWeight);
                         if (!dbPrint)
                         {
                             new DAL.Dal_Print().ReleaseForwarder_number(forwarderNoInfo);
@@ -315,7 +328,7 @@ namespace BLL
             }
 
             pmw_billcode billcodeInfo = new DAL.Dal_Print().SupplementGetBillCodeInfo(S.repair);
-            if (billcodeInfo == null)
+            if (billcodeInfo == null || string.IsNullOrEmpty(billcodeInfo.packed_billcode))
             {
                 gr.MsgText = "无法获取快递单信息";
                 return gr;
@@ -328,13 +341,13 @@ namespace BLL
                 return gr;
             }
             CFHMPring pringInfo = new DAL.Dal_Print().SupplementGetPrintInfo(billcodeInfo.packed_billcode);
-            if (orderInfo == null)
+            if (pringInfo == null)
             {
                 gr.MsgText = "无法获取打印信息";
                 return gr;
             }
             pmw_timeBar flightInfo = new DAL.Dal_Print().getFlightTime(orderInfo.timeBarID);
-            if (orderInfo == null)
+            if (flightInfo == null)
             {
                 gr.MsgText = "无法获取航班信息";
                 return gr;
@@ -367,10 +380,18 @@ namespace BLL
                 VersionCode = VersionCode,
                 chargedWeight = orderInfo.Free_Weight.ToString()
             });
-            gr.ReturnJson = DataHandling.ObjToJson(reqList);
-            gr.State = true;
-            gr.Mb = orderInfo.sent_kd_com;
-            gr.MsgText = S.operateMan;
+            if (reqList.Count > 0)
+            {
+                gr.ReturnJson = DataHandling.ObjToJson(reqList);
+                gr.State = true;
+                gr.Mb = pringInfo.deliveryCom;
+                gr.MsgText = S.operateMan;
+            }
+            else
+            {
+                gr.MsgText = "无法获取打印信息";
+            }
+
             return gr;
 
         }

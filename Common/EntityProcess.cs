@@ -22,10 +22,7 @@ namespace Common
     /// </summary>
     public class EntityProcess
     {
-        /// <summary>
-        /// 服务器列表
-        /// </summary>
-        public static Dictionary<int, SererInfo> ServerList = new Dictionary<int, SererInfo>();
+       
         /// <summary>
         /// 获取当前服务器信息
         /// </summary>
@@ -34,7 +31,7 @@ namespace Common
         {
             try
             {
-                return ServerList.Last(x => x.Value.NowServer).Value;
+                return Common.Entity.ServerList.Last(x => x.Value.NowServer).Value;
             }
             catch
             {
@@ -137,5 +134,34 @@ namespace Common
             return outStr;
         }
         #endregion
+
+
+        /// <summary>
+        /// 获取本地配置文件内容
+        /// </summary>
+        public static void GetLocdConfig()
+        {
+            IniHelper ini = new IniHelper(Common.Entity.SocketPaht);
+            FastSocket.FastSocketCode = ini.ReadValue("Server", "ServerMode") == "0";
+            int.TryParse(ini.ReadValue("Config", "MessageMode"), out FastSocket.MagCode);
+            int NowServer = 0;
+            int.TryParse(ini.ReadValue("Config", "NowServer"), out NowServer);
+            string ServerListJson = ini.ReadValue("Server", "ServerList");
+            Common.Entity.PostUrl = ini.ReadValue("Server", "URL");
+            if (ServerListJson == string.Empty)
+            {
+                ServerListJson = "[{\"Name\":\"默认服务器\",\"IP\":\"47.90.48.6\",\"Port\":\"8503\"},{\"Name\":\"备用服务器\",\"IP\":\"47.90.48.6\",\"Port\":\"8503\"},{\"Name\":\"内部服务器\",\"IP\":\"47.90.48.6\",\"Port\":\"8503\"}]";
+            }
+           Common.Entity.ServerList = new Dictionary<int, SererInfo>();
+            List<SererInfo> ServerList =Common.DataHandling.JsonToObject<List<SererInfo>>(ServerListJson);
+            NowServer = ServerList.Count <= NowServer ? 0 : NowServer;
+            for (int i = 0; i < ServerList.Count; i++)
+            {
+                SererInfo s = ServerList[i];
+                s.NowServer = i == NowServer;
+                s.ServerState = true;
+                Entity.ServerList.Add(i, s);
+            }
+        }
     }
 }
