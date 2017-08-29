@@ -20,35 +20,36 @@ namespace BLL
             pmw_order orderInfo = new pmw_order();
             if (String.IsNullOrEmpty(S.OrderID))
             {
-                pmw_admin adminInfo = new DAL.DalGet_order_detail().GetShopNameIDArray(S.Operator);
-                if (adminInfo == null || String.IsNullOrEmpty(adminInfo.shop_name))
-                {
-                    genRet.MsgText = "无法获取员工管理店铺";
-                    return genRet;
-                }
-                orderInfo = RegionalPicking(adminInfo.shop_name.Split(','), S.site, S.areaCode);
-                if (orderInfo == null || string.IsNullOrEmpty(orderInfo.order_code))
-                {
-                    genRet.MsgText = "没有拣货任务了";
-                    return genRet;
-                }
-            }
-            else
-            {
                 orderInfo = new DAL.DalGet_order_detail().IsPicking(S);
                 if (orderInfo == null)
                 {
-                    if (new DAL.DalGet_order_detail().OrderOutBillCodeNotOut(int.Parse(S.OrderID)))
+                    pmw_admin adminInfo = new DAL.DalGet_order_detail().GetShopNameIDArray(S.Operator);
+                    if (adminInfo == null || String.IsNullOrEmpty(adminInfo.shop_name))
                     {
-                        new DAL.DalGet_order_detail().UpdateOrderNotOut(int.Parse(S.OrderID), 0);
+                        genRet.MsgText = "无法获取员工管理店铺";
+                        return genRet;
+                    }
+                    orderInfo = RegionalPicking(adminInfo.shop_name.Split(','), S.site, S.areaCode);
+                    if (orderInfo == null || string.IsNullOrEmpty(orderInfo.order_code))
+                    {
+                        genRet.MsgText = "没有拣货任务了";
+                        return genRet;
+                    }
+                }
 
-                    }
-                    orderInfo = new DAL.DalGet_order_detail().OrderIDGetTask(int.Parse(S.OrderID), S.site);
-                    if ((orderInfo == null || string.IsNullOrEmpty(orderInfo.order_code)) && !new DAL.DalGet_order_detail().IsOutBillCode(int.Parse(S.OrderID)))
-                    {
-                        new DAL.DalGet_order_detail().UpdateOrderNotOut(int.Parse(S.OrderID), 1);
-                        genRet.MsgText = "该订单已经下架";
-                    }
+            }
+            else
+            {
+                if (new DAL.DalGet_order_detail().OrderOutBillCodeNotOut(int.Parse(S.OrderID)))
+                {
+                    new DAL.DalGet_order_detail().UpdateOrderNotOut(int.Parse(S.OrderID), 0);
+
+                }
+                orderInfo = new DAL.DalGet_order_detail().OrderIDGetTask(int.Parse(S.OrderID), S.site);
+                if ((orderInfo == null || string.IsNullOrEmpty(orderInfo.order_code)) && !new DAL.DalGet_order_detail().IsOutBillCode(int.Parse(S.OrderID)))
+                {
+                    new DAL.DalGet_order_detail().UpdateOrderNotOut(int.Parse(S.OrderID), 1);
+                    genRet.MsgText = "该订单已经下架";
                 }
             }
 
