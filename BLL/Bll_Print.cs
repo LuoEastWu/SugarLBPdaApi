@@ -352,6 +352,12 @@ namespace BLL
                 gr.MsgText = "无法获取航班信息";
                 return gr;
             }
+            GoodsCatalog goodsInfo = new DAL.Dal_Print().getGoodsTypeInfo(S.repair);
+            if (goodsInfo == null)
+            {
+                gr.MsgText = "无法获取货物类型";
+                return gr;
+            }
             string SignerCode = string.Empty, VersionCode = string.Empty, addressCode = string.Empty;
             secondEJSPushData(pringInfo.deliveryCom, pringInfo.recipientsAdd, out SignerCode, out VersionCode, out addressCode);
             reqList.Add(new Model.M_Print.Return
@@ -360,7 +366,7 @@ namespace BLL
                 billcode = pringInfo.KD_billcodeList,
                 employee = S.operateMan,
                 Js_number = (int)pringInfo.TurnNumber,
-                briefCode = pringInfo.deliveryCode,
+                briefCode = goodsInfo.briefCode,
                 goodsType = billcodeInfo.goodsTyep,
                 goodsName = pringInfo.goods,
                 shopName = pringInfo.consolidator,
