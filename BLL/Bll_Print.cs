@@ -247,6 +247,11 @@ namespace BLL
                 return new DAL.Dal_Print()
             .getPrinConfig(kdComanpy);
             }
+            else if (kdComanpy.Contains("立邦"))
+            {
+                return new DAL.Dal_Print()
+          .getPrinConfig(kdComanpy);
+            }
             else
             {
                 return new DAL.Dal_Print()
