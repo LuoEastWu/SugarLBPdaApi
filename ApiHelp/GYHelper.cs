@@ -136,7 +136,7 @@ namespace ApiHelp
             try
             {
                 FileStream Fs = new FileStream(FileName, FileMode.OpenOrCreate, FileAccess.Write);
-                Byte[] EODByte = System.Text.Encoding.Default.GetBytes(WriteText);
+                Byte[] EODByte = System.Text.Encoding.GetEncoding("Big5").GetBytes(WriteText);
                 Fs.Position = Fs.Length;
                 Fs.Write(EODByte, 0, EODByte.Length);
                 Fs.Close();
