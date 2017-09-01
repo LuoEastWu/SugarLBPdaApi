@@ -454,7 +454,12 @@ namespace BLL
             {
                 return 9;
             }
-            return 0;
+            else 
+            {
+                //默认立邦
+                return 8;
+            }
+           
 
         }
 
