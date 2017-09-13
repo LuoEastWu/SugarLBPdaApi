@@ -23,7 +23,7 @@ namespace BLL
                 che.coir = new DAL.Dal_CheckOrderInfo().CheckOrderInfo(billCodeInfo.order_code);
                 if (che.coir.Count > 0)
                 {
-                    if (che.coir.Count == new DAL.Dal_CheckOrderInfo().GetOrderBillcodeCount(billCodeInfo.order_code))
+                    if (new DAL.Dal_CheckOrderInfo().GetOrderBillcodeCount(billCodeInfo.order_code)>=che.coir.Count)
                     {
                         che.cysList = new DAL.Dal_CheckOrderInfo().GetCysList(che.coir[0].country_id);
                         genRet.ReturnJson = Common.DataHandling.ObjToJson(che);

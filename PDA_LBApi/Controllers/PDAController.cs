@@ -336,6 +336,9 @@ namespace PDA_LBApi.Controllers
 
         }
 
+
+      
+
         /// <summary>
         /// 获取店铺
         /// </summary>
@@ -384,6 +387,17 @@ namespace PDA_LBApi.Controllers
             return Common.DataHandling.ObjToJson(new BLL.Bll_GetVosionNo().GetVosionNo());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="weight">重量</param>
+        /// <param name="size">尺寸</param>
+        /// <returns>true/false</returns>
+        // [ReturnClass(null, "承运商重量尺寸规格")]
+        //private Model.GeneralReturns CarrierWeightDimensions(string weight,string size)
+        //{
+            
+        //}
 
     }
 }
