@@ -127,24 +127,24 @@ namespace BLL
                             return genRet;
                         }
                         string printNo = forwarderNoInfo.num;
-                        if (new DAL.Dal_Print().getForwardingAgentNoCount(forwarderInfo.id) < 2001)
-                        {
-                            try
-                            {
-                                var SentState1 = FastSocket.MaeesgeSend(new MassgeClass()
-                                {
-                                    IsSite = true,
-                                    Mags = forwarderInfo.ForwarderName,
-                                    MagsID = "0",
-                                    Mags_Type = "HmOrderCount",
-                                    SiteOrUser = new string[] { "客服" }
-                                }, false);
-                            }
-                            catch (Exception ex)
-                            {
+                        //if (new DAL.Dal_Print().getForwardingAgentNoCount(forwarderInfo.id) < 2001)
+                        //{
+                        //    try
+                        //    {
+                        //        var SentState1 = FastSocket.MaeesgeSend(new MassgeClass()
+                        //        {
+                        //            IsSite = true,
+                        //            Mags = forwarderInfo.ForwarderName,
+                        //            MagsID = "0",
+                        //            Mags_Type = "HmOrderCount",
+                        //            SiteOrUser = new string[] { "客服" }
+                        //        }, false);
+                        //    }
+                        //    catch (Exception ex)
+                        //    {
 
-                            }
-                        }
+                        //    }
+                        //}
 
                         string recipients = new DAL.Dal_Print().getRecipientName(orderInfo.cname, orderInfo.id);
                         StringBuilder strBuiBill = new StringBuilder();
