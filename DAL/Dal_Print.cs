@@ -110,11 +110,8 @@ namespace DAL
         {
             return Common.Config.StartSqlSugar((db) =>
             {
-                return db.Queryable<GoodsCatalog, pmw_billcode>((a, b) => new object[]
-                {
-                    JoinType.Left,a.goodsName==b.goodsTyep&&a.id==b.goods_id
-                })
-                .Where((a, b) => b.kd_billcode == billcode)
+                return db.Queryable<GoodsCatalog>()
+                .Where((a) => a.goodsName == billcode)
                 .First();
             });
 
@@ -252,7 +249,7 @@ namespace DAL
         /// <param name="S"></param>
         /// <param name="printNo"></param>
         /// <returns></returns>
-        public bool Print(pmw_order orderInfo, string orderSentBillCode, string orderSentCompany, string recipients, pmw_house houserInfo, TaoBaoInfo tbInfo, Forwarder forwarderInfo, string[] billCoderList,StringBuilder strBuiBillcode,int billcodeCount, string goodsName, Model.M_Print.Request S, string printNo, double weightBillcode)
+        public bool Print(pmw_order orderInfo, string orderSentBillCode, string orderSentCompany, string recipients, pmw_house houserInfo, TaoBaoInfo tbInfo, Forwarder forwarderInfo, string[] billCoderList, string goodsName, Model.M_Print.Request S, string printNo, double weightBillcode)
         {
             return Common.Config.StartSqlSugar<bool>((db) =>
             {
@@ -314,7 +311,7 @@ namespace DAL
                         recipientsAdd = orderInfo.address,
                         recipientsPhone = orderInfo.mobile,
                         recipientsIDCard = orderInfo.RecipientCode,
-                        TurnNumber = billcodeCount,
+                        TurnNumber = billCoderList.Length,
                         Order_Notes = orderInfo.order_memo,
                         consolidator = tbInfo.Name,
                         deliveryCom = forwarderInfo.ForwarderName,
@@ -325,7 +322,7 @@ namespace DAL
                         CFpacked_code = forwarderInfo.ForwarderCode,
                         CFpacked_emp = S.operateMan,
                         CFpacked_kd_com = forwarderInfo.ForwarderName,
-                        KD_billcodeList = strBuiBillcode.ToString(),
+                        KD_billcodeList = string.Join(",", billCoderList),
                         houseID = houserInfo.id,
                         houseName = houserInfo.house_name,
                         netWeight = SqlFunc.ToDecimal(weightBillcode)

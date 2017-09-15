@@ -72,7 +72,7 @@ namespace BLL
                         #endregion
 
 
-                        GoodsCatalog goodsInfo = new DAL.Dal_Print().getGoodsTypeInfo(S.PackaginBillcode[0].billcode);
+                        GoodsCatalog goodsInfo = new DAL.Dal_Print().getGoodsTypeInfo(orderInfo.goodsType);
                         if (goodsInfo == null)
                         {
                             genRet.MsgText = "无法获取货物类型";
@@ -147,14 +147,10 @@ namespace BLL
                         //}
 
                         string recipients = new DAL.Dal_Print().getRecipientName(orderInfo.cname, orderInfo.id);
-                        StringBuilder strBuiBill = new StringBuilder();
-
-                        foreach (string strbill in billcodeList.ToArray())
-                        {
-                            strBuiBill.Append(strBuiBill.Length < 1 ? strbill : "," + strBuiBill);
-                        }
-
-                        bool dbPrint = new DAL.Dal_Print().Print(orderInfo, string.IsNullOrEmpty(orderInfo.sent_kd_billcode) ? printNo : orderInfo.sent_kd_billcode + "," + printNo, S.express.Contains("黑猫") ? "黑猫宅急便" : S.express, recipients, houseInfo, shopInfo, forwarderInfo, billcodeList.ToArray(), strBuiBill, billcodeList.Count, strBuiGoodsName.ToString(), S, printNo, billcodeWeight);
+                      
+                  
+                      
+                        bool dbPrint = new DAL.Dal_Print().Print(orderInfo, string.IsNullOrEmpty(orderInfo.sent_kd_billcode) ? printNo : orderInfo.sent_kd_billcode + "," + printNo, S.express.Contains("黑猫") ? "黑猫宅急便" : S.express, recipients, houseInfo, shopInfo, forwarderInfo, billcodeList.ToArray(),strBuiGoodsName.ToString(), S, printNo, billcodeWeight);
                         if (!dbPrint)
                         {
                             new DAL.Dal_Print().ReleaseForwarder_number(forwarderNoInfo);
@@ -357,7 +353,7 @@ namespace BLL
                 gr.MsgText = "无法获取航班信息";
                 return gr;
             }
-            GoodsCatalog goodsInfo = new DAL.Dal_Print().getGoodsTypeInfo(S.repair);
+            GoodsCatalog goodsInfo = new DAL.Dal_Print().getGoodsTypeInfo(orderInfo.goodsType);
             if (goodsInfo == null)
             {
                 gr.MsgText = "无法获取货物类型";
