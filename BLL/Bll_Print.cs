@@ -15,11 +15,7 @@ namespace BLL
         {
             Model.GeneralReturns genRet = new Model.GeneralReturns();
 
-            if (S.repair == "电脑核单") 
-            {
-
-            }
-
+          
             if (!string.IsNullOrEmpty(S.repair))
             {
                 return SupplementPrint(genRet, S);
