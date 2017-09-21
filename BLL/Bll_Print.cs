@@ -15,6 +15,11 @@ namespace BLL
         {
             Model.GeneralReturns genRet = new Model.GeneralReturns();
 
+            if (S.repair == "电脑核单") 
+            {
+
+            }
+
             if (!string.IsNullOrEmpty(S.repair))
             {
                 return SupplementPrint(genRet, S);
@@ -147,10 +152,10 @@ namespace BLL
                         //}
 
                         string recipients = new DAL.Dal_Print().getRecipientName(orderInfo.cname, orderInfo.id);
-                      
-                  
-                      
-                        bool dbPrint = new DAL.Dal_Print().Print(orderInfo, string.IsNullOrEmpty(orderInfo.sent_kd_billcode) ? printNo : orderInfo.sent_kd_billcode + "," + printNo, S.express.Contains("黑猫") ? "黑猫宅急便" : S.express, recipients, houseInfo, shopInfo, forwarderInfo, billcodeList.ToArray(),strBuiGoodsName.ToString(), S, printNo, billcodeWeight);
+
+
+
+                        bool dbPrint = new DAL.Dal_Print().Print(Convert.ToDecimal(collectingMoney), orderInfo, string.IsNullOrEmpty(orderInfo.sent_kd_billcode) ? printNo : orderInfo.sent_kd_billcode + "," + printNo, S.express.Contains("黑猫") ? "黑猫宅急便" : S.express, recipients, houseInfo, shopInfo, forwarderInfo, billcodeList.ToArray(), strBuiGoodsName.ToString(), S, printNo, billcodeWeight);
                         if (!dbPrint)
                         {
                             new DAL.Dal_Print().ReleaseForwarder_number(forwarderNoInfo);

@@ -249,7 +249,7 @@ namespace DAL
         /// <param name="S"></param>
         /// <param name="printNo"></param>
         /// <returns></returns>
-        public bool Print(pmw_order orderInfo, string orderSentBillCode, string orderSentCompany, string recipients, pmw_house houserInfo, TaoBaoInfo tbInfo, Forwarder forwarderInfo, string[] billCoderList, string goodsName, Model.M_Print.Request S, string printNo, double weightBillcode)
+        public bool Print(decimal collectingMoney, pmw_order orderInfo, string orderSentBillCode, string orderSentCompany, string recipients, pmw_house houserInfo, TaoBaoInfo tbInfo, Forwarder forwarderInfo, string[] billCoderList, string goodsName, Model.M_Print.Request S, string printNo, double weightBillcode)
         {
             return Common.Config.StartSqlSugar<bool>((db) =>
             {
@@ -304,7 +304,7 @@ namespace DAL
                     {
                         CForHM_number = printNo,
                         OrderID = orderInfo.id,
-                        freightPayable = SqlFunc.ToDecimal(orderInfo.agencyFund),
+                        freightPayable = collectingMoney,
                         goods = goodsName.ToString(),
                         recipients = recipients,
                         consignee = recipients,
