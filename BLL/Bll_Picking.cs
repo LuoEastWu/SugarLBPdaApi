@@ -15,6 +15,7 @@ namespace BLL
                 genRet.MsgText = "参数不全";
                 return genRet;
             }
+           S.out_barcode= new DAL.Dal_Picking().GetOrderCode(S.out_barcode);
             if (new DAL.Dal_Picking().AlreadyOutOrder(S.out_barcode))
             {
 

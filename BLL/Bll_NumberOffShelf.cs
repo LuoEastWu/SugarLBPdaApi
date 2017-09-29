@@ -17,6 +17,7 @@ namespace BLL
             }
             if (!new DAL.Dal_NumberOffShelf().IsThereTask(S.kd_billcode, S.out_barcode))
             {
+                
                 genRet.MsgText = "请输入正确的单号";
                 return genRet;
             }

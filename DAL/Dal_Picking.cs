@@ -9,6 +9,23 @@ namespace DAL
 {
     public class Dal_Picking
     {
+
+        /// <summary>
+        /// 获取订单识别
+        /// </summary>
+        /// <param name="out_barcode"></param>
+        /// <returns></returns>
+        public string GetOrderCode(string out_barcode) 
+        {
+            return Common.Config.StartSqlSugar<string>((db) =>
+            {
+                return db.Queryable<pmw_order>()
+                         .Where(a => a.order_code == out_barcode || a.id == SqlFunc.ToInt64(out_barcode))
+                         .Select(a => a.order_code)
+                         .First();
+            });
+        }
+
         /// <summary>
         /// 订单已经下架
         /// </summary>
@@ -81,6 +98,7 @@ namespace DAL
                     })
                     .Where(a => a.order_code == out_barcode)
                     .ExecuteCommand();
+
                     db.Updateable<pmw_billcode>(new
                     {
                         is_outplace = 0,

@@ -150,8 +150,8 @@ namespace BLL
                         string recipients = new DAL.Dal_Print().getRecipientName(orderInfo.cname, orderInfo.id);
 
 
-
-                        bool dbPrint = new DAL.Dal_Print().Print(Convert.ToDecimal(collectingMoney), orderInfo, string.IsNullOrEmpty(orderInfo.sent_kd_billcode) ? printNo : orderInfo.sent_kd_billcode + "," + printNo, S.express.Contains("黑猫") ? "黑猫宅急便" : S.express, recipients, houseInfo, shopInfo, forwarderInfo, billcodeList.ToArray(), strBuiGoodsName.ToString(), S, printNo, billcodeWeight);
+                      string sentKdBillcode=  string.IsNullOrEmpty(orderInfo.sent_kd_billcode) ? printNo : orderInfo.sent_kd_billcode + "," + printNo;
+                      bool dbPrint = new DAL.Dal_Print().Print(Convert.ToDecimal(collectingMoney), orderInfo, sentKdBillcode, S.express.Contains("黑猫") ? "黑猫宅急便" : S.express, recipients, houseInfo, shopInfo, forwarderInfo, billcodeList.ToArray(), strBuiGoodsName.ToString(), S, printNo, billcodeWeight);
                         if (!dbPrint)
                         {
                             new DAL.Dal_Print().ReleaseForwarder_number(forwarderNoInfo);

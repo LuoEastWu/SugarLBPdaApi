@@ -29,10 +29,10 @@ namespace DAL
          
 
           return  db.Queryable<Model.VosionNo.Version>()
-                     .Where(a => a.soft == "EJE" && a.now == 1)
+                     .Where(a => a.soft == "LBPDA" && a.now == 1)
                      .Select(a => new Model.M_GetVosionNo.Return
                      {
-                         geturl = "http://updata.rcominfo.com/EJE/EJEAndroidPDA.apk",
+                         geturl = "http://updata.rcominfo.com/LBPDA/LBAndroidPDA.apk",
                          vosoin = a.name,
                          Rem = a.text
                      }).First();
